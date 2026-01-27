@@ -21,25 +21,21 @@ func (i *KakaoAuthCallbackInterceptor) PreHandle(ctx core.ExecutionContext, meta
 	}
 	code := codes[0]
 
-	// 2. code → kakao access token 교환
 	token, err := i.client.ExchangeCodeForToken(code)
 	if err != nil {
 		return httperr.Unauthorized("kakao token 발급 실패")
 	}
 
-	// 3. access token으로 kakao user 조회
 	kakaoUser, err := i.client.GetUser(token)
 	if err != nil {
 		return httperr.Unauthorized("kakao 사용자 정보 조회 실패")
 	}
 
-	// 4. 내부 User 조회 또는 생성
 	user, err := i.client.MapOrCreateUser(kakaoUser)
 	if err != nil {
 		return httperr.Unauthorized("사용자 처리 중 오류 발생")
 	}
 
-	// 5. Spine Context에 주입
 	ctx.Set("auth.user", user)
 
 	return nil

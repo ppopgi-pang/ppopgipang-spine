@@ -113,13 +113,11 @@ func (c *KakaoOAuthClient) ExchangeCodeForToken(code string) (string, error) {
 
 func (c *KakaoOAuthClient) MapOrCreateUser(kakaoUser *dto.KakaoUserResponse) (*userEntity.User, error) {
 
-	// 1. 이미 존재하는 유저 조회
 	user, err := c.userRepository.FindByEmail(kakaoUser.KakaoAccount.Email)
 	if err == nil {
 		return &user, nil
 	}
 
-	// 2. 신규 유저 생성
 	newUser := &userEntity.User{
 		Email:    kakaoUser.KakaoAccount.Email,
 		Nickname: kakaoUser.KakaoAccount.Profile.Nickname,
