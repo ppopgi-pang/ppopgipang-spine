@@ -1,0 +1,12 @@
+package routes
+
+import (
+	"github.com/NARUBROWN/spine"
+	"github.com/NARUBROWN/spine/pkg/route"
+	"github.com/ppopgi-pang/ppopgipang-spine/auth/controller"
+	"github.com/ppopgi-pang/ppopgipang-spine/auth/interceptor"
+)
+
+func RegisterUserRoutes(app spine.App) {
+	app.Route("GET", "/api/v1/auth/kakao/callback", (*controller.AuthController).KakaoCallback, route.WithInterceptors((*interceptor.KakaoAuthCallbackInterceptor)(nil)))
+}

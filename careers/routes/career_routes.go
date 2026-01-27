@@ -6,5 +6,5 @@ import (
 )
 
 func RegisterUserRoutes(app spine.App) {
-	app.Route("POST", "v1/careers/job-postings", (*controller.CareerController).GetJobPostings)
+	app.Route("POST", "/v1/careers/job-postings", (*controller.CareerController).GetJobPostings)
 }

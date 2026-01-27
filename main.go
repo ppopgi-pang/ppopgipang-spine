@@ -9,6 +9,12 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
+	authClient "github.com/ppopgi-pang/ppopgipang-spine/auth/client"
+	authController "github.com/ppopgi-pang/ppopgipang-spine/auth/controller"
+	authInterceptor "github.com/ppopgi-pang/ppopgipang-spine/auth/interceptor"
+	authRoutes "github.com/ppopgi-pang/ppopgipang-spine/auth/routes"
+	authService "github.com/ppopgi-pang/ppopgipang-spine/auth/service"
+
 	careerEntity "github.com/ppopgi-pang/ppopgipang-spine/careers/entities"
 	certificationEntity "github.com/ppopgi-pang/ppopgipang-spine/certifications/entities"
 	gamificationEntity "github.com/ppopgi-pang/ppopgipang-spine/gamification/entities"
@@ -63,6 +69,8 @@ import (
 	storeRoutes "github.com/ppopgi-pang/ppopgipang-spine/stores/routes"
 	tradeRoutes "github.com/ppopgi-pang/ppopgipang-spine/trades/routes"
 	userRoutes "github.com/ppopgi-pang/ppopgipang-spine/users/routes"
+
+	"github.com/joho/godotenv"
 )
 
 func NewDB() *gorm.DB {
@@ -115,6 +123,8 @@ func NewDB() *gorm.DB {
 }
 
 func main() {
+	_ = godotenv.Load()
+
 	app := spine.New()
 
 	app.Constructor(
@@ -149,6 +159,10 @@ func main() {
 		storeController.NewStoreController,
 		tradeController.NewTradeController,
 		userController.NewUserController,
+		authClient.NewKakaoOAuthClient,
+		authInterceptor.NewKakaoAuthCallbackInterceptor,
+		authController.NewAuthController,
+		authService.NewAuthService,
 	)
 
 	// 커리어 라우트 등록
@@ -171,6 +185,8 @@ func main() {
 	tradeRoutes.RegisterTradeRoutes(app)
 	// 유저 라우트 등록
 	userRoutes.RegisterUserRoutes(app)
+	// 인증 라우트 등록
+	authRoutes.RegisterUserRoutes(app)
 
 	app.Run(boot.Options{
 		Address:                ":8080",
