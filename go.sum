@@ -6,6 +6,8 @@ github.com/NARUBROWN/spine v0.3.2 h1:WxSfmkl3LttsBX4xuNm5Tj7EpW5Gwba2EfGURX5vMbo
 github.com/NARUBROWN/spine v0.3.2/go.mod h1:9516TfRndN+x6DMtJW67PdN3E/+R3pzrkpK91hK545Y=
 github.com/NARUBROWN/spine v0.3.3 h1:gKzOaHaKN0HHnymeTVSo5Kf33K92Gvgci6CVfGkPBuI=
 github.com/NARUBROWN/spine v0.3.3/go.mod h1:9516TfRndN+x6DMtJW67PdN3E/+R3pzrkpK91hK545Y=
+github.com/NARUBROWN/spine v0.3.4 h1:3EjnyviTLyZHpoFn03dP9H5ukp7Ku5uIlFfhrzmhcMM=
+github.com/NARUBROWN/spine v0.3.4/go.mod h1:9516TfRndN+x6DMtJW67PdN3E/+R3pzrkpK91hK545Y=
 github.com/go-sql-driver/mysql v1.8.1 h1:LedoTUt/eveggdHS9qUFC1EFSa8bU2+1pZjSRpvNJ1Y=
 github.com/go-sql-driver/mysql v1.8.1/go.mod h1:wEBSXgmK//2ZFJyE+qWnIsVGmvmEKlqwuVSjsCm7DZg=
 github.com/golang-jwt/jwt/v5 v5.3.0 h1:pv4AsKCKKZuqlgs5sUmn4x8UlGa0kEVt/puTpKx9vvo=

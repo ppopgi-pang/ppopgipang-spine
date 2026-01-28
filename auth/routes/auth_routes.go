@@ -8,5 +8,5 @@ import (
 )
 
 func RegisterUserRoutes(app spine.App) {
-	app.Route("GET", "/api/v1/auth/kakao/callback", (*controller.AuthController).KakaoCallback, route.WithInterceptors((*interceptor.KakaoAuthCallbackInterceptor)(nil)))
+	app.Route("GET", "/auth/kakao/callback", (*controller.AuthController).KakaoCallback, route.WithInterceptors((*interceptor.KakaoAuthCallbackInterceptor)(nil)))
 }
