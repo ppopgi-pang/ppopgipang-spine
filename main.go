@@ -15,6 +15,10 @@ import (
 	authRoutes "github.com/ppopgi-pang/ppopgipang-spine/auth/routes"
 	authService "github.com/ppopgi-pang/ppopgipang-spine/auth/service"
 
+	commonController "github.com/ppopgi-pang/ppopgipang-spine/commons/controller"
+	commonRoutes "github.com/ppopgi-pang/ppopgipang-spine/commons/routes"
+	commonService "github.com/ppopgi-pang/ppopgipang-spine/commons/service"
+
 	careerEntity "github.com/ppopgi-pang/ppopgipang-spine/careers/entities"
 	certificationEntity "github.com/ppopgi-pang/ppopgipang-spine/certifications/entities"
 	gamificationEntity "github.com/ppopgi-pang/ppopgipang-spine/gamification/entities"
@@ -163,6 +167,8 @@ func main() {
 		authInterceptor.NewKakaoAuthCallbackInterceptor,
 		authController.NewAuthController,
 		authService.NewAuthService,
+		commonController.NewCommonController,
+		commonService.NewCommonService,
 	)
 
 	// 커리어 라우트 등록
@@ -186,7 +192,9 @@ func main() {
 	// 유저 라우트 등록
 	userRoutes.RegisterUserRoutes(app)
 	// 인증 라우트 등록
-	authRoutes.RegisterUserRoutes(app)
+	authRoutes.RegisterAuthRoutes(app)
+	// 공통 라우트 등록
+	commonRoutes.RegisterCommonRoutes(app)
 
 	app.Run(boot.Options{
 		Address:                ":8080",

@@ -7,6 +7,6 @@ import (
 	"github.com/ppopgi-pang/ppopgipang-spine/auth/interceptor"
 )
 
-func RegisterUserRoutes(app spine.App) {
+func RegisterAuthRoutes(app spine.App) {
 	app.Route("GET", "/auth/kakao/callback", (*controller.AuthController).KakaoCallback, route.WithInterceptors((*interceptor.KakaoAuthCallbackInterceptor)(nil)))
 }
