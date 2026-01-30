@@ -3,7 +3,7 @@ package entities
 import "time"
 
 type JobPosting struct {
-	ID           uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	ID           int64     `gorm:"primaryKey;autoIncrement" json:"id"`
 	Title        string    `gorm:"type:varchar(200);not null" json:"title"`
 	Description  *string   `gorm:"type:text" json:"description"`
 	Department   *string   `gorm:"type:varchar(100)" json:"department"`

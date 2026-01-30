@@ -12,22 +12,22 @@ import (
 
 	"github.com/ppopgi-pang/ppopgipang-spine/auth/dto"
 	userEntity "github.com/ppopgi-pang/ppopgipang-spine/users/entities"
-	userRepository "github.com/ppopgi-pang/ppopgipang-spine/users/repository"
+	userService "github.com/ppopgi-pang/ppopgipang-spine/users/service"
 )
 
 type KakaoOAuthClient struct {
-	http           *http.Client
-	clientID       string
-	redirectURI    string
-	userRepository *userRepository.UserRepository
+	http        *http.Client
+	clientID    string
+	redirectURI string
+	userService *userService.UserService
 }
 
-func NewKakaoOAuthClient(userRepository *userRepository.UserRepository) *KakaoOAuthClient {
+func NewKakaoOAuthClient(userService *userService.UserService) *KakaoOAuthClient {
 	return &KakaoOAuthClient{
-		http:           &http.Client{Timeout: 5 * time.Second},
-		clientID:       os.Getenv("KAKAO_CLIENT_ID"),
-		redirectURI:    os.Getenv("KAKAO_REDIRECT_URI"),
-		userRepository: userRepository,
+		http:        &http.Client{Timeout: 5 * time.Second},
+		clientID:    os.Getenv("KAKAO_CLIENT_ID"),
+		redirectURI: os.Getenv("KAKAO_REDIRECT_URI"),
+		userService: userService,
 	}
 }
 
@@ -113,7 +113,7 @@ func (c *KakaoOAuthClient) ExchangeCodeForToken(code string) (string, error) {
 
 func (c *KakaoOAuthClient) MapOrCreateUser(kakaoUser *dto.KakaoUserResponse) (*userEntity.User, error) {
 
-	user, err := c.userRepository.FindByEmail(kakaoUser.KakaoAccount.Email)
+	user, err := c.userService.FindByEmail(kakaoUser.KakaoAccount.Email)
 	if err == nil {
 		return &user, nil
 	}
@@ -122,7 +122,7 @@ func (c *KakaoOAuthClient) MapOrCreateUser(kakaoUser *dto.KakaoUserResponse) (*u
 		Email:    kakaoUser.KakaoAccount.Email,
 		Nickname: kakaoUser.KakaoAccount.Profile.Nickname,
 	}
-	if err := c.userRepository.Create(newUser); err != nil {
+	if err := c.userService.Create(newUser); err != nil {
 		return nil, err
 	}
 

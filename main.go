@@ -6,8 +6,13 @@ import (
 
 	"github.com/NARUBROWN/spine"
 	"github.com/NARUBROWN/spine/pkg/boot"
+	"github.com/labstack/echo/v4"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	"github.com/NARUBROWN/spine/interceptor/cors"
+	_ "github.com/ppopgi-pang/ppopgipang-spine/docs"
 
 	authClient "github.com/ppopgi-pang/ppopgipang-spine/auth/client"
 	authController "github.com/ppopgi-pang/ppopgipang-spine/auth/controller"
@@ -29,17 +34,6 @@ import (
 	storeEntity "github.com/ppopgi-pang/ppopgipang-spine/stores/entities"
 	tradeEntity "github.com/ppopgi-pang/ppopgipang-spine/trades/entities"
 	userEntity "github.com/ppopgi-pang/ppopgipang-spine/users/entities"
-
-	careerRepository "github.com/ppopgi-pang/ppopgipang-spine/careers/repository"
-	certificationRepository "github.com/ppopgi-pang/ppopgipang-spine/certifications/repository"
-	gamificationRepository "github.com/ppopgi-pang/ppopgipang-spine/gamification/repository"
-	moderationRepository "github.com/ppopgi-pang/ppopgipang-spine/moderation/repository"
-	notificationRepository "github.com/ppopgi-pang/ppopgipang-spine/notifications/repository"
-	proposalRepository "github.com/ppopgi-pang/ppopgipang-spine/proposals/repository"
-	reviewRepository "github.com/ppopgi-pang/ppopgipang-spine/reviews/repository"
-	storeRepository "github.com/ppopgi-pang/ppopgipang-spine/stores/repository"
-	tradeRepository "github.com/ppopgi-pang/ppopgipang-spine/trades/repository"
-	userRepository "github.com/ppopgi-pang/ppopgipang-spine/users/repository"
 
 	careerService "github.com/ppopgi-pang/ppopgipang-spine/careers/service"
 	certificationService "github.com/ppopgi-pang/ppopgipang-spine/certifications/service"
@@ -126,6 +120,11 @@ func NewDB() *gorm.DB {
 	return db
 }
 
+// @title 뽑기팡 API
+// @version 0.0.1
+// @description 뽑기팡 Spine 애플리케이션
+// @host localhost:8080
+// @BasePath /api/v1/
 func main() {
 	_ = godotenv.Load()
 
@@ -133,16 +132,6 @@ func main() {
 
 	app.Constructor(
 		NewDB,
-		careerRepository.NewCareerRepository,
-		certificationRepository.NewCertificationRepository,
-		gamificationRepository.NewGamificationRepository,
-		moderationRepository.NewModerationRepository,
-		notificationRepository.NewNotificationRepository,
-		proposalRepository.NewProposalRepository,
-		reviewRepository.NewReviewRepository,
-		storeRepository.NewStoreRepository,
-		tradeRepository.NewTradeRepository,
-		userRepository.NewUserRepository,
 		careerService.NewCareerService,
 		certificationService.NewCertificationService,
 		gamificationService.NewGamificationService,
@@ -165,10 +154,19 @@ func main() {
 		userController.NewUserController,
 		authClient.NewKakaoOAuthClient,
 		authInterceptor.NewKakaoAuthCallbackInterceptor,
+		authInterceptor.NewJwtInterceptor,
 		authController.NewAuthController,
 		authService.NewAuthService,
 		commonController.NewCommonController,
 		commonService.NewCommonService,
+	)
+
+	app.Interceptor(
+		cors.New(cors.Config{
+			AllowOrigins: []string{"*"},
+			AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "OPTIONS"},
+			AllowHeaders: []string{"Content-Type"},
+		}),
 	)
 
 	// 커리어 라우트 등록
@@ -195,6 +193,12 @@ func main() {
 	authRoutes.RegisterAuthRoutes(app)
 	// 공통 라우트 등록
 	commonRoutes.RegisterCommonRoutes(app)
+
+	// 스웨거 UI 등록
+	app.Transport(func(t any) {
+		e := t.(*echo.Echo)
+		e.GET("/swagger/*", echo.WrapHandler(httpSwagger.WrapHandler))
+	})
 
 	app.Run(boot.Options{
 		Address:                ":8080",

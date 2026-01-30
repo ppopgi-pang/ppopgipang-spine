@@ -9,4 +9,5 @@ import (
 
 func RegisterAuthRoutes(app spine.App) {
 	app.Route("GET", "/auth/kakao/callback", (*controller.AuthController).KakaoCallback, route.WithInterceptors((*interceptor.KakaoAuthCallbackInterceptor)(nil)))
+	app.Route("POST", "/auth/create-admin-user", (*controller.AuthController).CreateAdminUser, route.WithInterceptors((*interceptor.JwtInterceptor)(nil)))
 }

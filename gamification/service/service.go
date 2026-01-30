@@ -1,11 +1,11 @@
 package service
 
-import "github.com/ppopgi-pang/ppopgipang-spine/gamification/repository"
+import "gorm.io/gorm"
 
 type GamificationService struct {
-	repo *repository.GamificationRepository
+	db *gorm.DB
 }
 
-func NewGamificationService(repo *repository.GamificationRepository) *GamificationService {
-	return &GamificationService{repo: repo}
+func NewGamificationService(db *gorm.DB) *GamificationService {
+	return &GamificationService{db: db}
 }

@@ -1,11 +1,11 @@
 package service
 
-import "github.com/ppopgi-pang/ppopgipang-spine/certifications/repository"
+import "gorm.io/gorm"
 
 type CertificationService struct {
-	repo *repository.CertificationRepository
+	db *gorm.DB
 }
 
-func NewCertificationService(repo *repository.CertificationRepository) *CertificationService {
-	return &CertificationService{repo: repo}
+func NewCertificationService(db *gorm.DB) *CertificationService {
+	return &CertificationService{db: db}
 }

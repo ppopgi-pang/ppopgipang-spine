@@ -1,11 +1,11 @@
 package service
 
-import "github.com/ppopgi-pang/ppopgipang-spine/moderation/repository"
+import "gorm.io/gorm"
 
 type ModerationService struct {
-	repo *repository.ModerationRepository
+	db *gorm.DB
 }
 
-func NewModerationService(repo *repository.ModerationRepository) *ModerationService {
-	return &ModerationService{repo: repo}
+func NewModerationService(db *gorm.DB) *ModerationService {
+	return &ModerationService{db: db}
 }

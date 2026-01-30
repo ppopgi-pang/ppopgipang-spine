@@ -1,11 +1,11 @@
 package service
 
-import "github.com/ppopgi-pang/ppopgipang-spine/proposals/repository"
+import "gorm.io/gorm"
 
 type ProposalService struct {
-	repo *repository.ProposalRepository
+	db *gorm.DB
 }
 
-func NewProposalService(repo *repository.ProposalRepository) *ProposalService {
-	return &ProposalService{repo: repo}
+func NewProposalService(db *gorm.DB) *ProposalService {
+	return &ProposalService{db: db}
 }

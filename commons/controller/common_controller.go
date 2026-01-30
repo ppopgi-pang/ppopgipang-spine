@@ -25,7 +25,7 @@ func (c *CommonController) UploadFiles(ctx context.Context, files multipart.Uplo
 			return httpx.Response[[]string]{}, errors.New("파일이 너무 큽니다.")
 		}
 
-		name, err := c.commonService.SaveToDisk(file, "./uploads")
+		name, err := c.commonService.SaveToDisk(file, "./uploads/temps")
 		if err != nil {
 			return httpx.Response[[]string]{}, err
 		}

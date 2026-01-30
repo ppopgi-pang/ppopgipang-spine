@@ -1,20 +1,36 @@
 package service
 
 import (
+	"context"
+	"errors"
 	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"github.com/ppopgi-pang/ppopgipang-spine/auth/dto"
 	userEntity "github.com/ppopgi-pang/ppopgipang-spine/users/entities"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type AuthService struct {
 	jwtSecret        []byte
 	jwtRefreshSecret []byte
+	db               *gorm.DB
 }
 
-func NewAuthService() *AuthService {
+type AccessTokenPayload struct {
+	UserID int64
+	Role   string
+}
+
+type RefreshTokenPayload struct {
+	UserID  int64
+	TokenID string
+}
+
+func NewAuthService(db *gorm.DB) *AuthService {
 	jwtSecret := os.Getenv("JWT_SECRET")
 	jwtRefreshSecret := os.Getenv("JWT_REFRESH_SECRET")
 
@@ -25,15 +41,22 @@ func NewAuthService() *AuthService {
 	return &AuthService{
 		jwtSecret:        []byte(jwtSecret),
 		jwtRefreshSecret: []byte(jwtRefreshSecret),
+		db:               db,
 	}
 }
 
 func (a *AuthService) IssueAccessToken(user *userEntity.User) string {
+	role := "user"
+	if user.IsAdmin {
+		role = "admin"
+	}
+
 	claims := jwt.MapClaims{
-		"sub": user.ID,
-		"typ": "access",
-		"exp": time.Now().Add(5 * time.Minute).Unix(),
-		"iat": time.Now().Unix(),
+		"sub":  user.ID,
+		"role": role,
+		"typ":  "access",
+		"exp":  time.Now().Add(5 * time.Minute).Unix(),
+		"iat":  time.Now().Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -64,9 +87,147 @@ func (a *AuthService) IssueRefreshToken(user *userEntity.User) string {
 		panic(err)
 	}
 
-	// 🔒 서버에 refresh token 저장 (필수)
 	user.RefreshToken = &tokenID
-	// 예: a.userRepo.UpdateRefreshToken(user.ID, tokenID)
 
 	return signed
+}
+
+func (a *AuthService) VerifyAccessToken(token string) (*AccessTokenPayload, error) {
+	claims, err := a.parseToken(token, a.jwtSecret)
+	if err != nil {
+		return nil, err
+	}
+
+	if typ, _ := claims["typ"].(string); typ != "access" {
+		return nil, jwt.ErrTokenMalformed
+	}
+
+	userID, err := toInt64(claims["sub"])
+	if err != nil {
+		return nil, err
+	}
+
+	role, _ := claims["role"].(string)
+	if role == "" {
+		role = "user"
+	}
+
+	return &AccessTokenPayload{
+		UserID: userID,
+		Role:   role,
+	}, nil
+}
+
+func (a *AuthService) VerifyRefreshToken(token string) (*RefreshTokenPayload, error) {
+	claims, err := a.parseToken(token, a.jwtRefreshSecret)
+	if err != nil {
+		return nil, err
+	}
+
+	if typ, _ := claims["typ"].(string); typ != "refresh" {
+		return nil, jwt.ErrTokenMalformed
+	}
+
+	userID, err := toInt64(claims["sub"])
+	if err != nil {
+		return nil, err
+	}
+
+	tokenID, _ := claims["tid"].(string)
+	if tokenID == "" {
+		return nil, jwt.ErrTokenMalformed
+	}
+
+	return &RefreshTokenPayload{
+		UserID:  userID,
+		TokenID: tokenID,
+	}, nil
+}
+
+func (a *AuthService) parseToken(token string, secret []byte) (jwt.MapClaims, error) {
+	parsed, err := jwt.Parse(token, func(t *jwt.Token) (any, error) {
+		if t.Method != jwt.SigningMethodHS256 {
+			return nil, jwt.ErrSignatureInvalid
+		}
+		return secret, nil
+	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
+	if err != nil {
+		return nil, err
+	}
+
+	if !parsed.Valid {
+		return nil, jwt.ErrTokenMalformed
+	}
+
+	claims, ok := parsed.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, jwt.ErrTokenMalformed
+	}
+
+	return claims, nil
+}
+
+func toInt64(value any) (int64, error) {
+	switch v := value.(type) {
+	case int64:
+		return v, nil
+	case int:
+		return int64(v), nil
+	case float64:
+		return int64(v), nil
+	case float32:
+		return int64(v), nil
+	case string:
+		if v == "" {
+			return 0, errors.New("empty sub claim")
+		}
+		var n int64
+		for i := 0; i < len(v); i++ {
+			ch := v[i]
+			if ch < '0' || ch > '9' {
+				return 0, errors.New("invalid sub claim")
+			}
+			n = n*10 + int64(ch-'0')
+		}
+		return n, nil
+	default:
+		return 0, errors.New("invalid sub claim type")
+	}
+}
+
+func (a *AuthService) CreateAdminUser(ctx context.Context, dto *dto.AdminUserRequest) error {
+	db := a.db.WithContext(ctx)
+
+	var existingAdmin userEntity.User
+	result := db.Where("email = ?", dto.Email).First(&existingAdmin)
+	if result.Error == nil {
+		return gorm.ErrDuplicatedKey
+	}
+	if result.Error != nil && result.Error != gorm.ErrRecordNotFound {
+		return result.Error
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword(
+		[]byte(dto.Password),
+		bcrypt.DefaultCost,
+	)
+
+	stringPassword := string(hashedPassword)
+
+	if err != nil {
+		return err
+	}
+
+	user := userEntity.User{
+		Email:         dto.Email,
+		Nickname:      dto.Email,
+		AdminPassword: &stringPassword,
+		IsAdmin:       true,
+	}
+
+	if err := db.Create(&user).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

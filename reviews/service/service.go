@@ -1,11 +1,11 @@
 package service
 
-import "github.com/ppopgi-pang/ppopgipang-spine/reviews/repository"
+import "gorm.io/gorm"
 
 type ReviewService struct {
-	repo *repository.ReviewRepository
+	db *gorm.DB
 }
 
-func NewReviewService(repo *repository.ReviewRepository) *ReviewService {
-	return &ReviewService{repo: repo}
+func NewReviewService(db *gorm.DB) *ReviewService {
+	return &ReviewService{db: db}
 }

@@ -1,11 +1,11 @@
 package service
 
-import "github.com/ppopgi-pang/ppopgipang-spine/stores/repository"
+import "gorm.io/gorm"
 
 type StoreService struct {
-	repo *repository.StoreRepository
+	db *gorm.DB
 }
 
-func NewStoreService(repo *repository.StoreRepository) *StoreService {
-	return &StoreService{repo: repo}
+func NewStoreService(db *gorm.DB) *StoreService {
+	return &StoreService{db: db}
 }

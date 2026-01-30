@@ -3,8 +3,8 @@ package entities
 import "time"
 
 type Application struct {
-	ID           uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	JobPostingID uint      `gorm:"column:jobPosting_id;not null;index:idx_applications_job_posting" json:"jobPostingId"`
+	ID           int64     `gorm:"primaryKey;autoIncrement" json:"id"`
+	JobPostingID int64     `gorm:"column:jobPosting_id;not null;index:idx_applications_job_posting" json:"jobPostingId"`
 	Name         string    `gorm:"type:varchar(100);not null" json:"name"`
 	Email        string    `gorm:"type:varchar(200);not null" json:"email"`
 	Phone        *string   `gorm:"type:varchar(20)" json:"phone"`

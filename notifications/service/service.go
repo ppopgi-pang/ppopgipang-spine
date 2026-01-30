@@ -1,11 +1,11 @@
 package service
 
-import "github.com/ppopgi-pang/ppopgipang-spine/notifications/repository"
+import "gorm.io/gorm"
 
 type NotificationService struct {
-	repo *repository.NotificationRepository
+	db *gorm.DB
 }
 
-func NewNotificationService(repo *repository.NotificationRepository) *NotificationService {
-	return &NotificationService{repo: repo}
+func NewNotificationService(db *gorm.DB) *NotificationService {
+	return &NotificationService{db: db}
 }

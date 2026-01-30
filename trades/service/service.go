@@ -1,11 +1,11 @@
 package service
 
-import "github.com/ppopgi-pang/ppopgipang-spine/trades/repository"
+import "gorm.io/gorm"
 
 type TradeService struct {
-	repo *repository.TradeRepository
+	db *gorm.DB
 }
 
-func NewTradeService(repo *repository.TradeRepository) *TradeService {
-	return &TradeService{repo: repo}
+func NewTradeService(db *gorm.DB) *TradeService {
+	return &TradeService{db: db}
 }
