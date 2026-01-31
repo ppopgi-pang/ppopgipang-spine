@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"log"
 	"os"
 	"time"
 
@@ -30,6 +31,12 @@ type RefreshTokenPayload struct {
 	TokenID string
 }
 
+type RotateRefreshTokenResult struct {
+	Payload         *RefreshTokenPayload
+	NewRefreshToken string
+	User            userEntity.User
+}
+
 func NewAuthService(db *gorm.DB) *AuthService {
 	jwtSecret := os.Getenv("JWT_SECRET")
 	jwtRefreshSecret := os.Getenv("JWT_REFRESH_SECRET")
@@ -43,6 +50,73 @@ func NewAuthService(db *gorm.DB) *AuthService {
 		jwtRefreshSecret: []byte(jwtRefreshSecret),
 		db:               db,
 	}
+}
+
+func (a *AuthService) SaveRefreshToken(ctx context.Context, userId int64, refreshToken string) error {
+	db := a.db.WithContext(ctx)
+
+	return db.Model(&userEntity.User{}).
+		Where("id = ?", userId).
+		Update("refreshToken", refreshToken).
+		Error
+}
+
+func (a *AuthService) RotateRefreshToken(refreshToken string) (*RotateRefreshTokenResult, error) {
+	payload, err := a.VerifyRefreshToken(refreshToken)
+	if err != nil {
+		log.Printf("verify refresh token error: %v", err)
+		return nil, err
+	}
+
+	var user userEntity.User
+	if err := a.db.Where("id = ?", payload.UserID).First(&user).Error; err != nil {
+		log.Printf("여기1")
+		return nil, err
+	}
+
+	if user.RefreshToken == nil || *user.RefreshToken != payload.TokenID {
+		if user.RefreshToken == nil {
+			log.Printf("db refresh token is nil for user %d", payload.UserID)
+		} else {
+			log.Printf("db tokenID=%s, payload tid=%s", *user.RefreshToken, payload.TokenID)
+		}
+		log.Printf("%+v", user)
+		return nil, errors.New("refresh token reuse detected or revoked")
+	}
+
+	newTokenID := uuid.NewString()
+
+	claims := jwt.MapClaims{
+		"sub": payload.UserID,
+		"tid": newTokenID,
+		"typ": "refresh",
+		"exp": time.Now().Add(7 * 24 * time.Hour).Unix(),
+		"iat": time.Now().Unix(),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	newSigned, err := token.SignedString(a.jwtRefreshSecret)
+	if err != nil {
+		log.Printf("여기3")
+		return nil, err
+	}
+
+	// DB에 새 token id 저장 (rotate)
+	user.RefreshToken = &newTokenID
+	if err := a.db.Save(&user).Error; err != nil {
+		log.Printf("여기4")
+		return nil, err
+	}
+
+	return &RotateRefreshTokenResult{
+		Payload: &RefreshTokenPayload{
+			UserID:  payload.UserID,
+			TokenID: newTokenID,
+		},
+		User:            user,
+		NewRefreshToken: newSigned,
+	}, nil
 }
 
 func (a *AuthService) IssueAccessToken(user *userEntity.User) string {

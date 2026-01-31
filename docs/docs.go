@@ -36,6 +36,16 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/auth/refresh": {
+            "post": {
+                "description": "Refresh Token으로 Access Token 재발급을 진행합니다.",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Access Token 재발급",
+                "responses": {}
+            }
+        },
         "/careers/job-postings": {
             "get": {
                 "description": "공고 목록을 활성화 상태, 페이지네이션 QueryString 옵션으로 가져옵니다.",
