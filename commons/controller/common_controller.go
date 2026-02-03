@@ -17,6 +17,13 @@ func NewCommonController(commonService *service.CommonService) *CommonController
 	return &CommonController{commonService: commonService}
 }
 
+// @Summary (공통) 파일 업로드
+// @Description 파일 업로드 API
+// @Tags Commons
+// @Accept multipart/form-data
+// @Param files formData file true "업로드할 파일들"
+// @Success 200 {array} string
+// @Router /commons/file-uploads [POST]
 func (c *CommonController) UploadFiles(ctx context.Context, files multipart.UploadedFiles) (httpx.Response[[]string], error) {
 	names := make([]string, 0, len(files.Files))
 	for _, file := range files.Files {

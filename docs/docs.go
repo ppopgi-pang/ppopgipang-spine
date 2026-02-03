@@ -46,6 +46,99 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/careers/applications": {
+            "get": {
+                "description": "관리자 지원서 목록 조회 API",
+                "tags": [
+                    "Careers"
+                ],
+                "summary": "(관리자) 지원서 목록 조회",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "찾을 공고 ID",
+                        "name": "jobPostingId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "지원서 상태",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "페이지 번호",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "한번에 가져올 목록의 개수",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ApplicationListResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "사용자 지원서 제출 API",
+                "tags": [
+                    "Careers"
+                ],
+                "summary": "(사용자) 지원서 제출",
+                "parameters": [
+                    {
+                        "description": "지원서 요청 Body",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateApplicationRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/careers/applications/{id}": {
+            "get": {
+                "description": "관리자 지원서 상세 조회 API",
+                "tags": [
+                    "Careers"
+                ],
+                "summary": "(관리자) 지원서 상세 조회",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "지원서 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ApplicationResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/careers/job-postings": {
             "get": {
                 "description": "공고 목록을 활성화 상태, 페이지네이션 QueryString 옵션으로 가져옵니다.",
@@ -131,6 +224,89 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {}
+            },
+            "delete": {
+                "description": "관리자 모집 공고 삭제 API",
+                "tags": [
+                    "Careers"
+                ],
+                "summary": "(관리자) 모집 공고 삭제",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "삭제할 공고의 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            },
+            "patch": {
+                "description": "관리자 모집 공고 수정 API",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Careers"
+                ],
+                "summary": "(관리자) 모집 공고 수정",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "수정할 공고의 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "요청 Body",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.JobPostingModifyRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/commons/file-uploads": {
+            "post": {
+                "description": "파일 업로드 API",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "tags": [
+                    "Commons"
+                ],
+                "summary": "(공통) 파일 업로드",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "업로드할 파일들",
+                        "name": "files",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         }
     },
@@ -145,6 +321,92 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ApplicationJobPosting": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ApplicationListResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ApplicationResponse"
+                    }
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ApplicationResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "job_posting_response": {
+                    "$ref": "#/definitions/dto.ApplicationJobPosting"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "resume_file_name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateApplicationRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "job_posting_id": {
+                    "type": "integer"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "resume_file_name": {
                     "type": "string"
                 }
             }
@@ -166,6 +428,29 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.JobPostingModifyRequest": {
+            "type": "object",
+            "properties": {
+                "Department": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "position_type": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         },

@@ -9,6 +9,62 @@ definitions:
       password:
         type: string
     type: object
+  dto.ApplicationJobPosting:
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
+  dto.ApplicationListResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/dto.ApplicationResponse'
+        type: array
+      page:
+        type: integer
+      size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  dto.ApplicationResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      job_posting_response:
+        $ref: '#/definitions/dto.ApplicationJobPosting'
+      memo:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      resume_file_name:
+        type: string
+      status:
+        type: string
+    type: object
+  dto.CreateApplicationRequest:
+    properties:
+      email:
+        type: string
+      job_posting_id:
+        type: integer
+      memo:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      resume_file_name:
+        type: string
+    type: object
   dto.JobPostingListResponse:
     properties:
       item:
@@ -21,6 +77,21 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  dto.JobPostingModifyRequest:
+    properties:
+      Department:
+        type: string
+      description:
+        type: string
+      is_active:
+        type: boolean
+      location:
+        type: string
+      position_type:
+        type: string
+      title:
+        type: string
     type: object
   dto.JobPostingRequest:
     properties:
@@ -86,6 +157,69 @@ paths:
       summary: Access Token 재발급
       tags:
       - Auth
+  /careers/applications:
+    get:
+      description: 관리자 지원서 목록 조회 API
+      parameters:
+      - description: 찾을 공고 ID
+        format: int64
+        in: query
+        name: jobPostingId
+        type: integer
+      - description: 지원서 상태
+        in: query
+        name: status
+        required: true
+        type: string
+      - description: 페이지 번호
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 한번에 가져올 목록의 개수
+        in: query
+        name: size
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ApplicationListResponse'
+      summary: (관리자) 지원서 목록 조회
+      tags:
+      - Careers
+    post:
+      description: 사용자 지원서 제출 API
+      parameters:
+      - description: 지원서 요청 Body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateApplicationRequest'
+      responses: {}
+      summary: (사용자) 지원서 제출
+      tags:
+      - Careers
+  /careers/applications/{id}:
+    get:
+      description: 관리자 지원서 상세 조회 API
+      parameters:
+      - description: 지원서 ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ApplicationResponse'
+      summary: (관리자) 지원서 상세 조회
+      tags:
+      - Careers
   /careers/job-postings:
     get:
       description: 공고 목록을 활성화 상태, 페이지네이션 QueryString 옵션으로 가져옵니다.
@@ -130,6 +264,19 @@ paths:
       tags:
       - Careers
   /careers/job-postings/{id}:
+    delete:
+      description: 관리자 모집 공고 삭제 API
+      parameters:
+      - description: 삭제할 공고의 ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses: {}
+      summary: (관리자) 모집 공고 삭제
+      tags:
+      - Careers
     get:
       description: 사용자 모집 공고 상세 조회 API
       parameters:
@@ -145,4 +292,48 @@ paths:
       summary: (사용자) 모집 공고 상세 조회
       tags:
       - Careers
+    patch:
+      consumes:
+      - application/json
+      description: 관리자 모집 공고 수정 API
+      parameters:
+      - description: 수정할 공고의 ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 요청 Body
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.JobPostingModifyRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: (관리자) 모집 공고 수정
+      tags:
+      - Careers
+  /commons/file-uploads:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 파일 업로드 API
+      parameters:
+      - description: 업로드할 파일들
+        in: formData
+        name: files
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+      summary: (공통) 파일 업로드
+      tags:
+      - Commons
 swagger: "2.0"

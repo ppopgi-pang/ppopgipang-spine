@@ -7,7 +7,7 @@ require github.com/swaggo/http-swagger v1.3.4
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
-	github.com/NARUBROWN/spine v0.3.4 // indirect
+	github.com/NARUBROWN/spine v0.3.5 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
 	github.com/go-openapi/spec v0.20.6 // indirect
