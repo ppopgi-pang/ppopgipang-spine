@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/NARUBROWN/spine"
@@ -14,7 +15,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/NARUBROWN/spine/interceptor/cors"
-	_ "github.com/ppopgi-pang/ppopgipang-spine/docs"
+	docs "github.com/ppopgi-pang/ppopgipang-spine/docs"
 
 	authClient "github.com/ppopgi-pang/ppopgipang-spine/auth/client"
 	authController "github.com/ppopgi-pang/ppopgipang-spine/auth/controller"
@@ -142,6 +143,40 @@ func NewDB() *gorm.DB {
 	return db
 }
 
+func configureSwagger() {
+	host := strings.TrimSpace(os.Getenv("SWAGGER_HOST"))
+	if host == "" {
+		switch strings.ToLower(strings.TrimSpace(os.Getenv("APP_ENV"))) {
+		case "prod", "production":
+			host = strings.TrimSpace(os.Getenv("SWAGGER_HOST_PROD"))
+		case "dev", "development", "local":
+			host = strings.TrimSpace(os.Getenv("SWAGGER_HOST_DEV"))
+		}
+	}
+	if host != "" {
+		docs.SwaggerInfo.Host = host
+	}
+
+	schemes := splitAndTrimCSV(os.Getenv("SWAGGER_SCHEMES"))
+	if len(schemes) > 0 {
+		docs.SwaggerInfo.Schemes = schemes
+	}
+}
+
+func splitAndTrimCSV(value string) []string {
+	parts := strings.FieldsFunc(value, func(r rune) bool {
+		return r == ',' || r == ';'
+	})
+	out := make([]string, 0, len(parts))
+	for _, part := range parts {
+		trimmed := strings.TrimSpace(part)
+		if trimmed != "" {
+			out = append(out, trimmed)
+		}
+	}
+	return out
+}
+
 // @title 뽑기팡 API
 // @version 0.0.1
 // @description 뽑기팡 Spine 애플리케이션
@@ -149,6 +184,7 @@ func NewDB() *gorm.DB {
 // @BasePath /api/v1/
 func main() {
 	_ = godotenv.Load()
+	configureSwagger()
 
 	app := spine.New()
 
