@@ -8,13 +8,18 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    env:
-      IMAGE_OWNER: ${{ toLower(secrets.GHCR_USERNAME) }}
-      IMAGE_NAME: spine-app
 
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+
+    - name: Set image vars
+      shell: bash
+      run: |
+        echo "IMAGE_OWNER=${GHCR_USERNAME,,}" >> "$GITHUB_ENV"
+        echo "IMAGE_NAME=spine-app" >> "$GITHUB_ENV"
+      env:
+        GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
 
     - name: Set up QEMU (ARM build on x86)
       uses: docker/setup-qemu-action@v2
