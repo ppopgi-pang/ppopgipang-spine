@@ -57,6 +57,7 @@ jobs:
 
           docker run -d \
             --restart=always \
+            --network spine-net \
             --env-file /home/${{ secrets.SSH_USER }}/env/spine.env \
             -p 8080:8080 \
             --name spine-app \
