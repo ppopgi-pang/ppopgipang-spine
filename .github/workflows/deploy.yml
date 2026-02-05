@@ -8,6 +8,9 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      IMAGE_OWNER: ${{ toLower(secrets.GHCR_USERNAME) }}
+      IMAGE_NAME: spine-app
 
     steps:
     - name: Checkout
@@ -28,7 +31,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: ghcr.io/${{ secrets.GHCR_USERNAME }}/spine-app:latest
+        tags: ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.IMAGE_NAME }}:latest
 
     - name: SSH Deploy to OCI
       uses: appleboy/ssh-action@v0.1.7
@@ -40,7 +43,7 @@ jobs:
         script: |
           # docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} -p ${{ secrets.GHCR_TOKEN }}
 
-          docker pull ghcr.io/${{ secrets.GHCR_USERNAME }}/spine-app:latest
+          docker pull ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.IMAGE_NAME }}:latest
 
           docker stop spine-app || true
           docker rm spine-app || true
@@ -50,4 +53,4 @@ jobs:
             --env-file /home/${{ secrets.SSH_USER }}/env/spine.env \
             -p 80:8080 \
             --name spine-app \
-            ghcr.io/${{ secrets.GHCR_USERNAME }}/spine-app:latest
+            ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.IMAGE_NAME }}:latest
