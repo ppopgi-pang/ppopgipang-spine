@@ -9,14 +9,14 @@ import (
 )
 
 type Review struct {
-	ID        uint                  `gorm:"primaryKey;autoIncrement" json:"id"`
+	ID        int64                 `gorm:"primaryKey;autoIncrement" json:"id"`
 	Rating    int                   `gorm:"not null" json:"rating"`   // 별점
 	Content   *string               `gorm:"type:text" json:"content"` // 리뷰 내용
 	Images    types.JSONStringArray `gorm:"type:json" json:"images"`  // 리뷰 이미지
 	CreatedAt time.Time             `gorm:"column:createdAt;type:datetime(6);autoCreateTime" json:"createdAt"`
 	UpdatedAt time.Time             `gorm:"column:updatedAt;type:datetime(6);autoUpdateTime" json:"updatedAt"`
-	UserID    *uint                 `gorm:"column:userId" json:"userId"`   // 작성자 ID
-	StoreID   *uint                 `gorm:"column:storeId" json:"storeId"` // 가게 ID
+	UserID    *int64                `gorm:"column:userId" json:"userId"`   // 작성자 ID
+	StoreID   *int64                `gorm:"column:storeId" json:"storeId"` // 가게 ID
 
 	// Associations
 	User  *users.User   `gorm:"foreignKey:UserID" json:"user,omitempty"`

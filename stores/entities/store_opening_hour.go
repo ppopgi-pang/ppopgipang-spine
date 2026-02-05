@@ -1,7 +1,7 @@
 package entities
 
 type StoreOpeningHour struct {
-	ID        uint   `gorm:"primaryKey;autoIncrement" json:"id"`
+	ID        int64  `gorm:"primaryKey;autoIncrement" json:"id"`
 	StoreID   *uint  `gorm:"column:storeId" json:"storeId"`
 	DayOfWeek *int8  `gorm:"column:dayOfWeek;type:tinyint" json:"dayOfWeek"` // 0=Sun, 1=Mon, ... 6=Sat
 	OpenTime  string `gorm:"column:openTime;type:time" json:"openTime"`

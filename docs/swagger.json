@@ -302,6 +302,130 @@
                     }
                 }
             }
+        },
+        "/stores/in-bounds": {
+            "get": {
+                "description": "지도 바운즈(북/남/동/서) 좌표로 매장 목록을 키워드로 조회합니다.",
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "(공통) 영역 내 매장 조회",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "북쪽 위도",
+                        "name": "north",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "남쪽 위도",
+                        "name": "south",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "동쪽 경도",
+                        "name": "east",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "서쪽 경도",
+                        "name": "west",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "검색 키워드",
+                        "name": "keyword",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "필터(all|scrapped|popular|recent_cert)",
+                        "name": "filter",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.FindInBoundsDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/stores/nearby": {
+            "get": {
+                "description": "위도/경도 기준으로 주변 매장 목록을 페이지네이션과 키워드로 조회합니다.",
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "(공통) 주변 매장 조회",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "기준 위도",
+                        "name": "latitude",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "기준 경도",
+                        "name": "longitude",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "검색 반경(미터)",
+                        "name": "radius",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "검색 키워드",
+                        "name": "keyword",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "필터(all|scrapped|popular|recent_cert)",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "요청 페이지 번호",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "한번에 받을 페이지의 사이즈",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.FindNearByDto"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -405,6 +529,40 @@
                 }
             }
         },
+        "dto.FindInBoundsDto": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.StoreInBoundsResponse"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/dto.Meta"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.FindNearByDto": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.StoreFindNearByResponse"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/dto.Meta"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
         "dto.JobPostingListResponse": {
             "type": "object",
             "properties": {
@@ -499,6 +657,125 @@
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.Meta": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.StoreFindNearByResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "average_rating": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "distance": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "recent_review": {
+                    "type": "string"
+                },
+                "region1": {
+                    "type": "string"
+                },
+                "region2": {
+                    "type": "string"
+                },
+                "review_count": {
+                    "type": "integer"
+                },
+                "type": {
+                    "$ref": "#/definitions/dto.StoreTypeResponse"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.StoreInBoundsResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "average_rating": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "recent_review": {
+                    "type": "string"
+                },
+                "region1": {
+                    "type": "string"
+                },
+                "region2": {
+                    "type": "string"
+                },
+                "review_count": {
+                    "type": "integer"
+                },
+                "type": {
+                    "$ref": "#/definitions/dto.StoreTypeResponse"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.StoreTypeResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 }
             }

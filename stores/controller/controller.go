@@ -2,8 +2,13 @@ package controller
 
 import (
 	"context"
+	"strconv"
 
+	"github.com/NARUBROWN/spine/pkg/httperr"
+	"github.com/NARUBROWN/spine/pkg/httpx"
 	"github.com/NARUBROWN/spine/pkg/query"
+	"github.com/NARUBROWN/spine/pkg/spine"
+	"github.com/ppopgi-pang/ppopgipang-spine/stores/dto"
 	"github.com/ppopgi-pang/ppopgipang-spine/stores/service"
 )
 
@@ -15,4 +20,92 @@ func NewStoreController(storesService *service.StoreService) *StoreController {
 	return &StoreController{service: storesService}
 }
 
-func (s *StoreController) FindNearestStore(ctx context.Context, query query.Values) {}
+// @Summary (공통) 주변 매장 조회
+// @Description 위도/경도 기준으로 주변 매장 목록을 페이지네이션과 키워드로 조회합니다.
+// @Tags Stores
+// @Param latitude query number true "기준 위도"
+// @Param longitude query number true "기준 경도"
+// @Param radius query int false "검색 반경(미터)"
+// @Param keyword query string false "검색 키워드"
+// @Param filter query string false "필터(all|scrapped|popular|recent_cert)"
+// @Param page query int true "요청 페이지 번호"
+// @Param size query int true "한번에 받을 페이지의 사이즈"
+// @Success 200 {object} dto.FindNearByDto
+// @Router /stores/nearby [GET]
+func (s *StoreController) FindNearByStores(ctx context.Context, query query.Values, meta query.Pagination, spineCtx spine.Ctx) (httpx.Response[dto.FindNearByDto], error) {
+	latitudeRaw := query.Get("latitude")
+	longitudeRaw := query.Get("longitude")
+
+	latitude, _ := strconv.ParseFloat(latitudeRaw, 64)
+	longitude, _ := strconv.ParseFloat(longitudeRaw, 64)
+
+	radius := query.Int("radius", 0)
+	keyword := query.String("keyword")
+	filter := query.String("filter")
+
+	userID, err := getAuthUserID(spineCtx)
+	if err != nil {
+		return httpx.Response[dto.FindNearByDto]{}, err
+	}
+
+	result, err := s.service.FindNearByStores(ctx, latitude, longitude, radius, meta.Page, meta.Size, keyword, filter, userID)
+	if err != nil {
+		return httpx.Response[dto.FindNearByDto]{}, err
+	}
+	return httpx.Response[dto.FindNearByDto]{
+		Body: result,
+	}, nil
+}
+
+// @Summary (공통) 영역 내 매장 조회
+// @Description 지도 바운즈(북/남/동/서) 좌표로 매장 목록을 키워드로 조회합니다.
+// @Tags Stores
+// @Param north query number true "북쪽 위도"
+// @Param south query number true "남쪽 위도"
+// @Param east query number true "동쪽 경도"
+// @Param west query number true "서쪽 경도"
+// @Param keyword query string false "검색 키워드"
+// @Param filter query string false "필터(all|scrapped|popular|recent_cert)"
+// @Success 200 {object} dto.FindInBoundsDto
+// @Router /stores/in-bounds [GET]
+func (s *StoreController) FindStoresInBounds(ctx context.Context, query query.Values, spineCtx spine.Ctx) (httpx.Response[dto.FindInBoundsDto], error) {
+	northRaw := query.Get("north")
+	southRaw := query.Get("south")
+	eastRaw := query.Get("east")
+	westRaw := query.Get("west")
+
+	north, _ := strconv.ParseFloat(northRaw, 64)
+	south, _ := strconv.ParseFloat(southRaw, 64)
+	east, _ := strconv.ParseFloat(eastRaw, 64)
+	west, _ := strconv.ParseFloat(westRaw, 64)
+
+	keyword := query.String("keyword")
+	filter := query.String("filter")
+
+	userID, err := getAuthUserID(spineCtx)
+	if err != nil {
+		return httpx.Response[dto.FindInBoundsDto]{}, err
+	}
+
+	result, err := s.service.FindStoresInBounds(ctx, north, south, east, west, keyword, filter, userID)
+	if err != nil {
+		return httpx.Response[dto.FindInBoundsDto]{}, err
+	}
+	return httpx.Response[dto.FindInBoundsDto]{
+		Body: result,
+	}, nil
+}
+
+func getAuthUserID(spineCtx spine.Ctx) (int64, error) {
+	userIDAny, ok := spineCtx.Get("auth.userId")
+	if !ok {
+		return 0, httperr.Unauthorized("인증 정보가 없습니다.")
+	}
+
+	userID, ok := userIDAny.(int64)
+	if !ok {
+		return 0, httperr.Unauthorized("유효하지 않은 사용자 정보입니다.")
+	}
+
+	return userID, nil
+}

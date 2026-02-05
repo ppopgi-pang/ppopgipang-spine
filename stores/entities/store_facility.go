@@ -3,7 +3,7 @@ package entities
 import "github.com/ppopgi-pang/ppopgipang-spine/commons/types"
 
 type StoreFacility struct {
-	StoreID        uint                  `gorm:"column:storeId;primaryKey" json:"storeId"`
+	StoreID        int64                 `gorm:"column:storeId;primaryKey" json:"storeId"`
 	MachineCount   *int                  `gorm:"column:machineCount" json:"machineCount"`
 	PaymentMethods types.JSONStringArray `gorm:"column:paymentMethods;type:json" json:"paymentMethods"` // ["cash", "card", "qr"]
 	Notes          *string               `gorm:"type:varchar(255)" json:"notes"`

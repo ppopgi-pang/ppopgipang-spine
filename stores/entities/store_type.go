@@ -1,7 +1,7 @@
 package entities
 
 type StoreType struct {
-	ID          uint    `gorm:"primaryKey;autoIncrement" json:"id"`
+	ID          int64   `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name        string  `gorm:"type:varchar(50);not null" json:"name"` // 예: 인형뽑기, 가챠샵, 오락실
 	Description *string `gorm:"type:varchar(255)" json:"description"`
 

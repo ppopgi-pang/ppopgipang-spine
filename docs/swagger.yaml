@@ -65,6 +65,28 @@ definitions:
       resume_file_name:
         type: string
     type: object
+  dto.FindInBoundsDto:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.StoreInBoundsResponse'
+        type: array
+      meta:
+        $ref: '#/definitions/dto.Meta'
+      success:
+        type: boolean
+    type: object
+  dto.FindNearByDto:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.StoreFindNearByResponse'
+        type: array
+      meta:
+        $ref: '#/definitions/dto.Meta'
+      success:
+        type: boolean
+    type: object
   dto.JobPostingListResponse:
     properties:
       item:
@@ -127,6 +149,84 @@ definitions:
       title:
         type: string
       updated_at:
+        type: string
+    type: object
+  dto.Meta:
+    properties:
+      count:
+        type: integer
+    type: object
+  dto.StoreFindNearByResponse:
+    properties:
+      address:
+        type: string
+      average_rating:
+        type: number
+      created_at:
+        type: string
+      distance:
+        type: integer
+      id:
+        type: integer
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      phone:
+        type: string
+      recent_review:
+        type: string
+      region1:
+        type: string
+      region2:
+        type: string
+      review_count:
+        type: integer
+      type:
+        $ref: '#/definitions/dto.StoreTypeResponse'
+      updated_at:
+        type: string
+    type: object
+  dto.StoreInBoundsResponse:
+    properties:
+      address:
+        type: string
+      average_rating:
+        type: number
+      created_at:
+        type: string
+      id:
+        type: integer
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      phone:
+        type: string
+      recent_review:
+        type: string
+      region1:
+        type: string
+      region2:
+        type: string
+      review_count:
+        type: integer
+      type:
+        $ref: '#/definitions/dto.StoreTypeResponse'
+      updated_at:
+        type: string
+    type: object
+  dto.StoreTypeResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
         type: string
     type: object
 host: localhost:8080
@@ -336,4 +436,88 @@ paths:
       summary: (공통) 파일 업로드
       tags:
       - Commons
+  /stores/in-bounds:
+    get:
+      description: 지도 바운즈(북/남/동/서) 좌표로 매장 목록을 키워드로 조회합니다.
+      parameters:
+      - description: 북쪽 위도
+        in: query
+        name: north
+        required: true
+        type: number
+      - description: 남쪽 위도
+        in: query
+        name: south
+        required: true
+        type: number
+      - description: 동쪽 경도
+        in: query
+        name: east
+        required: true
+        type: number
+      - description: 서쪽 경도
+        in: query
+        name: west
+        required: true
+        type: number
+      - description: 검색 키워드
+        in: query
+        name: keyword
+        type: string
+      - description: 필터(all|scrapped|popular|recent_cert)
+        in: query
+        name: filter
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.FindInBoundsDto'
+      summary: (공통) 영역 내 매장 조회
+      tags:
+      - Stores
+  /stores/nearby:
+    get:
+      description: 위도/경도 기준으로 주변 매장 목록을 페이지네이션과 키워드로 조회합니다.
+      parameters:
+      - description: 기준 위도
+        in: query
+        name: latitude
+        required: true
+        type: number
+      - description: 기준 경도
+        in: query
+        name: longitude
+        required: true
+        type: number
+      - description: 검색 반경(미터)
+        in: query
+        name: radius
+        type: integer
+      - description: 검색 키워드
+        in: query
+        name: keyword
+        type: string
+      - description: 필터(all|scrapped|popular|recent_cert)
+        in: query
+        name: filter
+        type: string
+      - description: 요청 페이지 번호
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 한번에 받을 페이지의 사이즈
+        in: query
+        name: size
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.FindNearByDto'
+      summary: (공통) 주변 매장 조회
+      tags:
+      - Stores
 swagger: "2.0"

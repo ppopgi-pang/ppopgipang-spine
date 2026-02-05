@@ -7,7 +7,7 @@ import (
 )
 
 type StoreAnalytics struct {
-	StoreID         uint          `gorm:"column:storeId;primaryKey" json:"storeId"`
+	StoreID         int64         `gorm:"column:storeId;primaryKey" json:"storeId"`
 	CongestionScore int           `gorm:"column:congestionScore;default:0" json:"congestionScore"`      // 혼잡도 점수 (0~100)
 	SuccessProb     int           `gorm:"column:successProb;default:50" json:"successProb"`             // AI 예측 득템 확률 (0~100)
 	RecentLootCount int           `gorm:"column:recentLootCount;default:0" json:"recentLootCount"`      // 최근 1시간 내 득템 인증 수
