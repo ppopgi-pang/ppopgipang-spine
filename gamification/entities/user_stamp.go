@@ -7,8 +7,8 @@ import (
 )
 
 type UserStamp struct {
-	UserID     uint       `gorm:"column:userId;primaryKey" json:"userId"`
-	StampID    uint       `gorm:"column:stampId;primaryKey" json:"stampId"`
+	UserID     int64      `gorm:"column:userId;primaryKey" json:"userId"`
+	StampID    int64      `gorm:"column:stampId;primaryKey" json:"stampId"`
 	AcquiredAt *time.Time `gorm:"column:acquiredAt;type:datetime(6)" json:"acquiredAt"`
 
 	// Associations

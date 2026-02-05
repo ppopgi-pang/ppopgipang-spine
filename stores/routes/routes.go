@@ -8,6 +8,6 @@ import (
 )
 
 func RegisterStoreRoutes(app spine.App) {
-	app.Route("GET", "/stores/nearby", (*controller.StoreController).FindNearByStores, route.WithInterceptors((*authInterceptor.AccessTokenInterceptor)(nil)))
-	app.Route("GET", "/stores/in-bounds", (*controller.StoreController).FindStoresInBounds, route.WithInterceptors((*authInterceptor.AccessTokenInterceptor)(nil)))
+	app.Route("GET", "/stores/nearby", (*controller.StoreController).FindNearByStores, route.WithInterceptors((*authInterceptor.OptionalAccessTokenInterceptor)(nil)))
+	app.Route("GET", "/stores/in-bounds", (*controller.StoreController).FindStoresInBounds, route.WithInterceptors((*authInterceptor.OptionalAccessTokenInterceptor)(nil)))
 }

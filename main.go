@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/NARUBROWN/spine"
@@ -71,8 +73,28 @@ import (
 	"github.com/joho/godotenv"
 )
 
+func getenv(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
+}
+
 func NewDB() *gorm.DB {
-	dsn := "root:test1234@tcp(127.0.0.1:3306)/ppopgipang?charset=utf8mb4&parseTime=True&loc=Local"
+	dbUser := getenv("DB_USERNAME", "root")
+	dbPass := getenv("DB_PASSWORD", "test1234")
+	dbHost := getenv("DB_HOST", "127.0.0.1")
+	dbPort := getenv("DB_PORT", "3306")
+	dbName := getenv("DB_DATABASE", "ppopgipang")
+
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		dbUser,
+		dbPass,
+		dbHost,
+		dbPort,
+		dbName,
+	)
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -156,6 +178,7 @@ func main() {
 		authInterceptor.NewKakaoAuthCallbackInterceptor,
 		authInterceptor.NewRefreshTokenInterceptor,
 		authInterceptor.NewAccessTokenInterceptor,
+		authInterceptor.NewOptionalAccessTokenInterceptor,
 		authController.NewAuthController,
 		authService.NewAuthService,
 		commonController.NewCommonController,

@@ -4,10 +4,10 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/NARUBROWN/spine/pkg/httperr"
 	"github.com/NARUBROWN/spine/pkg/httpx"
 	"github.com/NARUBROWN/spine/pkg/query"
 	"github.com/NARUBROWN/spine/pkg/spine"
+	"github.com/ppopgi-pang/ppopgipang-spine/auth/utils"
 	"github.com/ppopgi-pang/ppopgipang-spine/stores/dto"
 	"github.com/ppopgi-pang/ppopgipang-spine/stores/service"
 )
@@ -43,7 +43,7 @@ func (s *StoreController) FindNearByStores(ctx context.Context, query query.Valu
 	keyword := query.String("keyword")
 	filter := query.String("filter")
 
-	userID, err := getAuthUserID(spineCtx)
+	userID, err := utils.GetAuthUserID(spineCtx)
 	if err != nil {
 		return httpx.Response[dto.FindNearByDto]{}, err
 	}
@@ -82,7 +82,7 @@ func (s *StoreController) FindStoresInBounds(ctx context.Context, query query.Va
 	keyword := query.String("keyword")
 	filter := query.String("filter")
 
-	userID, err := getAuthUserID(spineCtx)
+	userID, err := utils.GetAuthUserID(spineCtx)
 	if err != nil {
 		return httpx.Response[dto.FindInBoundsDto]{}, err
 	}
@@ -94,18 +94,4 @@ func (s *StoreController) FindStoresInBounds(ctx context.Context, query query.Va
 	return httpx.Response[dto.FindInBoundsDto]{
 		Body: result,
 	}, nil
-}
-
-func getAuthUserID(spineCtx spine.Ctx) (int64, error) {
-	userIDAny, ok := spineCtx.Get("auth.userId")
-	if !ok {
-		return 0, httperr.Unauthorized("인증 정보가 없습니다.")
-	}
-
-	userID, ok := userIDAny.(int64)
-	if !ok {
-		return 0, httperr.Unauthorized("유효하지 않은 사용자 정보입니다.")
-	}
-
-	return userID, nil
 }

@@ -3,23 +3,23 @@ package dto
 import "time"
 
 type StoreTypeResponse struct {
-	ID          int64   `json:"id"`
-	Name        string  `json:"name"`
-	Description *string `json:"description"`
+	ID          int64   `json:"id" example:"1"`
+	Name        string  `json:"name" example:"카페"`
+	Description *string `json:"description" example:"커피와 디저트"`
 }
 
 type StoreResponse struct {
-	ID            int64             `json:"id"`
-	Name          string            `json:"name"`
-	Address       *string           `json:"address"`
-	Region1       *string           `json:"region1"`
-	Region2       *string           `json:"region2"`
-	Latitude      float64           `json:"latitude"`
-	Longitude     float64           `json:"longitude"`
-	Phone         *string           `json:"phone"`
-	AverageRating float32           `json:"average_rating"`
-	Distance      int               `json:"distance"`
+	ID            int64             `json:"id" example:"2000"`
+	Name          string            `json:"name" example:"뽀끼빵 매장"`
+	Address       *string           `json:"address" example:"서울 강남구 테헤란로 10"`
+	Region1       *string           `json:"region1" example:"서울"`
+	Region2       *string           `json:"region2" example:"강남구"`
+	Latitude      float64           `json:"latitude" example:"37.5000"`
+	Longitude     float64           `json:"longitude" example:"127.0350"`
+	Phone         *string           `json:"phone" example:"02-555-1234"`
+	AverageRating float32           `json:"average_rating" example:"4.0"`
+	Distance      int               `json:"distance" example:"120"`
 	Type          StoreTypeResponse `json:"type"`
-	CreatedAt     time.Time         `json:"created_at"`
-	UpdatedAt     time.Time         `json:"updated_at"`
+	CreatedAt     time.Time         `json:"created_at" example:"2024-01-01T00:00:00Z"`
+	UpdatedAt     time.Time         `json:"updated_at" example:"2024-02-01T00:00:00Z"`
 }

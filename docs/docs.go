@@ -309,6 +309,23 @@ const docTemplate = `{
                 }
             }
         },
+        "/gamification/achievement/main": {
+            "get": {
+                "description": "맵 화면에서 가장 최근의 미해결된 업적의 진행상황을 조회하는 API입니다.",
+                "tags": [
+                    "Gamification"
+                ],
+                "summary": "(사용자) 가장 최근의 미해결 업적 진행상황 조회",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GamificationMainAchievementResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/stores/in-bounds": {
             "get": {
                 "description": "지도 바운즈(북/남/동/서) 좌표로 매장 목록을 키워드로 조회합니다.",
@@ -435,6 +452,55 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.AchievementProgressResponse": {
+            "type": "object",
+            "properties": {
+                "achievementId": {
+                    "type": "integer",
+                    "example": 101
+                },
+                "actionLabel": {
+                    "type": "string",
+                    "example": "4일 더 접속"
+                },
+                "badgeImageName": {
+                    "type": "string",
+                    "example": "badge_login_7.png"
+                },
+                "code": {
+                    "type": "string",
+                    "example": "LOGIN_STREAK"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "7일 연속으로 접속하세요"
+                },
+                "earnedAt": {
+                    "type": "string",
+                    "example": "2024-01-10T08:15:00Z"
+                },
+                "isCompleted": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "name": {
+                    "type": "string",
+                    "example": "연속 접속 7일"
+                },
+                "progressCurrent": {
+                    "type": "integer",
+                    "example": 3
+                },
+                "progressTarget": {
+                    "type": "integer",
+                    "example": 7
+                },
+                "remaining": {
+                    "type": "integer",
+                    "example": 4
+                }
+            }
+        },
         "dto.AdminUserRequest": {
             "type": "object",
             "properties": {
@@ -453,10 +519,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 101
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "백엔드 엔지니어"
                 }
             }
         },
@@ -470,13 +538,16 @@ const docTemplate = `{
                     }
                 },
                 "page": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "size": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 20
                 },
                 "total": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 58
                 }
             }
         },
@@ -484,31 +555,39 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-03-01T10:20:30Z"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "minsoo.kim@example.com"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 501
                 },
                 "job_posting_response": {
                     "$ref": "#/definitions/dto.ApplicationJobPosting"
                 },
                 "memo": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "백엔드 경력 5년"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "김민수"
                 },
                 "phone": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "010-1234-5678"
                 },
                 "resume_file_name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "resume.pdf"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "접수"
                 }
             }
         },
@@ -548,7 +627,8 @@ const docTemplate = `{
                     "$ref": "#/definitions/dto.Meta"
                 },
                 "success": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },
@@ -565,7 +645,20 @@ const docTemplate = `{
                     "$ref": "#/definitions/dto.Meta"
                 },
                 "success": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "dto.GamificationMainAchievementResponse": {
+            "type": "object",
+            "properties": {
+                "item": {
+                    "$ref": "#/definitions/dto.AchievementProgressResponse"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },
@@ -579,13 +672,16 @@ const docTemplate = `{
                     }
                 },
                 "page": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "size": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 20
                 },
                 "total": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 120
                 }
             }
         },
@@ -636,34 +732,44 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "application_count": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 12
                 },
-                "createdAt": {
-                    "type": "string"
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-01-02T15:04:05Z"
                 },
                 "department": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "개발팀"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "확장 가능한 API를 구축하고 운영합니다."
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 101
                 },
                 "is_active": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "location": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "서울"
                 },
                 "position_type": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "정규직"
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "백엔드 엔지니어"
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-02-10T09:30:00Z"
                 }
             }
         },
@@ -671,7 +777,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 200
                 }
             }
         },
@@ -679,49 +786,63 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "address": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "서울 강남구 강남대로 123"
                 },
                 "average_rating": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 4.5
                 },
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-01-10T08:15:00Z"
                 },
                 "distance": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 350
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 2001
                 },
                 "latitude": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 37.498
                 },
                 "longitude": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 127.0276
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "뽑기팡"
                 },
                 "phone": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "02-123-4567"
                 },
                 "recent_review": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "뽑기가 잘 뽑혀요"
                 },
                 "region1": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "서울"
                 },
                 "region2": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "강남구"
                 },
                 "review_count": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 27
                 },
                 "type": {
                     "$ref": "#/definitions/dto.StoreTypeResponse"
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-02-05T12:00:00Z"
                 }
             }
         },
@@ -729,46 +850,59 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "address": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "서울 마포구 마포대로 45"
                 },
                 "average_rating": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 4.2
                 },
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-01-12T09:00:00Z"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 2002
                 },
                 "latitude": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 37.541
                 },
                 "longitude": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 126.951
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "뽑기팡"
                 },
                 "phone": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "02-987-6543"
                 },
                 "recent_review": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "뽑기가 잘 뽑혀요"
                 },
                 "region1": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "서울"
                 },
                 "region2": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "마포구"
                 },
                 "review_count": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 18
                 },
                 "type": {
                     "$ref": "#/definitions/dto.StoreTypeResponse"
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-02-07T14:30:00Z"
                 }
             }
         },
@@ -776,13 +910,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "커피와 디저트"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "카페"
                 }
             }
         }

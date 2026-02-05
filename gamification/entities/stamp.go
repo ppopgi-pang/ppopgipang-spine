@@ -5,8 +5,8 @@ import (
 )
 
 type Stamp struct {
-	ID        uint    `gorm:"primaryKey;autoIncrement" json:"id"`
-	StoreID   *uint   `gorm:"column:storeId" json:"storeId"`
+	ID        int64   `gorm:"primaryKey;autoIncrement" json:"id"`
+	StoreID   *int64  `gorm:"column:storeId" json:"storeId"`
 	ImageName *string `gorm:"column:imageName;type:varchar(255)" json:"imageName"` // 가게 로고 혹은 지역 심볼
 
 	// Associations

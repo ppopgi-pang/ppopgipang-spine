@@ -7,8 +7,8 @@ import (
 )
 
 type UserAchievement struct {
-	UserID        uint       `gorm:"column:userId;primaryKey" json:"userId"`
-	AchievementID uint       `gorm:"column:achievementId;primaryKey" json:"achievementId"`
+	UserID        int64      `gorm:"column:userId;primaryKey" json:"userId"`
+	AchievementID int64      `gorm:"column:achievementId;primaryKey" json:"achievementId"`
 	EarnedAt      *time.Time `gorm:"column:earnedAt;type:datetime(6)" json:"earnedAt"`
 
 	// Associations

@@ -1,0 +1,53 @@
+name: Deploy Spine App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up QEMU (ARM build on x86)
+      uses: docker/setup-qemu-action@v2
+
+    - name: Login to GHCR
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ secrets.GHCR_USERNAME }}
+        password: ${{ secrets.GHCR_TOKEN }}
+
+    - name: Build & Push Docker Image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/${{ secrets.GHCR_USERNAME }}/spine-app:latest
+
+    - name: SSH Deploy to OCI
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          # docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} -p ${{ secrets.GHCR_TOKEN }}
+
+          docker pull ghcr.io/${{ secrets.GHCR_USERNAME }}/spine-app:latest
+
+          docker stop spine-app || true
+          docker rm spine-app || true
+
+          docker run -d \
+            --restart=always \
+            --env-file /home/${{ secrets.SSH_USER }}/env/spine.env \
+            -p 80:8080 \
+            --name spine-app \
+            ghcr.io/${{ secrets.GHCR_USERNAME }}/spine-app:latest
