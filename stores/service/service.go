@@ -299,3 +299,105 @@ func (s *StoreService) FindStoresInBounds(ctx context.Context, north, south, eas
 		},
 	}, nil
 }
+
+func (s *StoreService) SearchStore(ctx context.Context, keyword string, latitude, longitude float64, page, size int) (dto.StoreSearchResponse, error) {
+	type storeWithDistance struct {
+		entities.Store `gorm:"embedded"`
+		Distance       float64 `gorm:"column:distance"`
+	}
+
+	if page < 1 {
+		page = 1
+	}
+	if size < 1 {
+		size = 10
+	}
+
+	likeKeyword := "%" + keyword + "%"
+
+	baseQuery := s.db.WithContext(ctx).
+		Model(&entities.Store{}).
+		Where(
+			"(stores.name LIKE ? OR stores.address LIKE ?)",
+			likeKeyword,
+			likeKeyword,
+		)
+
+	var total int64
+	if err := baseQuery.Count(&total).Error; err != nil {
+		return dto.StoreSearchResponse{}, err
+	}
+
+	queryBuilder := baseQuery.
+		Session(&gorm.Session{}).
+		Preload("Photos", "`type` = ?", "cover").
+		Preload("Type")
+
+	if latitude != 0 && longitude != 0 {
+		queryBuilder = queryBuilder.
+			Select(
+				"stores.*, ST_Distance_Sphere(POINT(?, ?), POINT(stores.longitude, stores.latitude)) as distance",
+				longitude,
+				latitude,
+			).
+			Order("distance ASC")
+	} else {
+		queryBuilder = queryBuilder.
+			Select("stores.*, 0 as distance").
+			Order("stores.name ASC")
+	}
+
+	var rows []storeWithDistance
+	if err := queryBuilder.
+		Offset((page - 1) * size).
+		Limit(size).
+		Find(&rows).
+		Error; err != nil {
+		return dto.StoreSearchResponse{}, err
+	}
+
+	data := make([]dto.StoreResponse, 0, len(rows))
+	for _, row := range rows {
+		store := row.Store
+
+		var storeType dto.StoreTypeResponse
+		if store.Type != nil {
+			storeType = dto.StoreTypeResponse{
+				ID:          store.Type.ID,
+				Name:        store.Type.Name,
+				Description: store.Type.Description,
+			}
+		}
+
+		var thumbnailName *string
+		if len(store.Photos) > 0 {
+			thumbnailName = store.Photos[0].ImageName
+		}
+
+		data = append(data, dto.StoreResponse{
+			ID:            store.ID,
+			Name:          store.Name,
+			Address:       store.Address,
+			Region1:       store.Region1,
+			Region2:       store.Region2,
+			Latitude:      store.Latitude,
+			Longitude:     store.Longitude,
+			Phone:         store.Phone,
+			AverageRating: store.AverageRating,
+			Distance:      int(math.Round(row.Distance)),
+			Type:          storeType,
+			CreatedAt:     store.CreatedAt,
+			UpdatedAt:     store.UpdatedAt,
+			// 첫번째 커버 사진
+			ThumbnailName: thumbnailName,
+		})
+	}
+
+	return dto.StoreSearchResponse{
+		Success: true,
+		Data:    data,
+		Meta: dto.Meta{
+			Count: total,
+		},
+	}, nil
+}

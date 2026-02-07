@@ -320,6 +320,60 @@ definitions:
         example: "2024-02-07T14:30:00Z"
         type: string
     type: object
+  dto.StoreResponse:
+    properties:
+      address:
+        example: 서울 강남구 테헤란로 10
+        type: string
+      average_rating:
+        example: 4
+        type: number
+      created_at:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+      distance:
+        example: 120
+        type: integer
+      id:
+        example: 2000
+        type: integer
+      latitude:
+        example: 37.5
+        type: number
+      longitude:
+        example: 127.035
+        type: number
+      name:
+        example: 뽀끼빵 매장
+        type: string
+      phone:
+        example: 02-555-1234
+        type: string
+      region1:
+        example: 서울
+        type: string
+      region2:
+        example: 강남구
+        type: string
+      thumbnail_name:
+        type: string
+      type:
+        $ref: '#/definitions/dto.StoreTypeResponse'
+      updated_at:
+        example: "2024-02-01T00:00:00Z"
+        type: string
+    type: object
+  dto.StoreSearchResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.StoreResponse'
+        type: array
+      meta:
+        $ref: '#/definitions/dto.Meta'
+      success:
+        type: boolean
+    type: object
   dto.StoreTypeResponse:
     properties:
       description:
@@ -632,6 +686,43 @@ paths:
           schema:
             $ref: '#/definitions/dto.FindNearByDto'
       summary: (공통) 주변 매장 조회
+      tags:
+      - Stores
+  /stores/search:
+    get:
+      description: 사용자 가게 검색 API입니다.
+      parameters:
+      - description: 위도
+        format: float64
+        in: query
+        name: latitude
+        type: number
+      - description: 경도
+        format: float64
+        in: query
+        name: longitude
+        type: number
+      - description: 검색 키워드
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: 요청 페이지 번호
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 한번에 받을 페이지의 사이즈
+        in: query
+        name: size
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StoreSearchResponse'
+      summary: (사용자) 가게 검색
       tags:
       - Stores
 swagger: "2.0"

@@ -443,6 +443,60 @@
                     }
                 }
             }
+        },
+        "/stores/search": {
+            "get": {
+                "description": "사용자 가게 검색 API입니다.",
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "(사용자) 가게 검색",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "format": "float64",
+                        "description": "위도",
+                        "name": "latitude",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "format": "float64",
+                        "description": "경도",
+                        "name": "longitude",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "검색 키워드",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "요청 페이지 번호",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "한번에 받을 페이지의 사이즈",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.StoreSearchResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -897,6 +951,82 @@
                 "updated_at": {
                     "type": "string",
                     "example": "2024-02-07T14:30:00Z"
+                }
+            }
+        },
+        "dto.StoreResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "서울 강남구 테헤란로 10"
+                },
+                "average_rating": {
+                    "type": "number",
+                    "example": 4
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
+                },
+                "distance": {
+                    "type": "integer",
+                    "example": 120
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 2000
+                },
+                "latitude": {
+                    "type": "number",
+                    "example": 37.5
+                },
+                "longitude": {
+                    "type": "number",
+                    "example": 127.035
+                },
+                "name": {
+                    "type": "string",
+                    "example": "뽀끼빵 매장"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "02-555-1234"
+                },
+                "region1": {
+                    "type": "string",
+                    "example": "서울"
+                },
+                "region2": {
+                    "type": "string",
+                    "example": "강남구"
+                },
+                "thumbnail_name": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/dto.StoreTypeResponse"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2024-02-01T00:00:00Z"
+                }
+            }
+        },
+        "dto.StoreSearchResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.StoreResponse"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/dto.Meta"
+                },
+                "success": {
+                    "type": "boolean"
                 }
             }
         },

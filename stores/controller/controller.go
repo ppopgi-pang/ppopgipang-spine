@@ -95,3 +95,33 @@ func (s *StoreController) FindStoresInBounds(ctx context.Context, query query.Va
 		Body: result,
 	}, nil
 }
+
+// @Summary (사용자) 가게 검색
+// @Description 사용자 가게 검색 API입니다.
+// @Tags Stores
+// @Param latitude query float64 false "위도"
+// @Param longitude query float64 false "경도"
+// @Param keyword query string true "검색 키워드"
+// @Param page query int true "요청 페이지 번호"
+// @Param size query int true "한번에 받을 페이지의 사이즈"
+// @Success 200 {object} dto.StoreSearchResponse
+// @Router /stores/search [GET]
+func (s *StoreController) SearchStore(ctx context.Context, query query.Values, meta query.Pagination) (httpx.Response[dto.StoreSearchResponse], error) {
+	latitudeRaw := query.Get("latitude")
+	longitudeRaw := query.Get("longitude")
+
+	latitude, _ := strconv.ParseFloat(latitudeRaw, 64)
+	longitude, _ := strconv.ParseFloat(longitudeRaw, 64)
+
+	keyword := query.String("keyword")
+
+	result, err := s.service.SearchStore(ctx, keyword, latitude, longitude, meta.Page, meta.Size)
+
+	if err != nil {
+		return httpx.Response[dto.StoreSearchResponse]{}, err
+	}
+
+	return httpx.Response[dto.StoreSearchResponse]{
+		Body: result,
+	}, nil
+}
