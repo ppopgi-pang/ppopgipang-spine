@@ -55,10 +55,14 @@ jobs:
           docker stop spine-app || true
           docker rm spine-app || true
 
+          UPLOADS_HOST_DIR=/home/${{ secrets.SSH_USER }}/data/spine/uploads
+          mkdir -p "$UPLOADS_HOST_DIR"
+
           docker run -d \
             --restart=always \
             --network spine-net \
             --env-file /home/${{ secrets.SSH_USER }}/env/spine.env \
+            -v "$UPLOADS_HOST_DIR:/app/uploads" \
             -p 8080:8080 \
             --name spine-app \
             ghcr.io/${{ env.IMAGE_OWNER }}/${{ env.IMAGE_NAME }}:latest
