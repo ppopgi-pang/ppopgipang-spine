@@ -4,10 +4,11 @@ import (
 	"context"
 	"math"
 
-	certEntity "github.com/ppopgi-pang/ppopgipang-spine/certifications/entities"
-	reviewEntity "github.com/ppopgi-pang/ppopgipang-spine/reviews/entities"
+	certEntities "github.com/ppopgi-pang/ppopgipang-spine/certifications/entities"
+	reviewEntities "github.com/ppopgi-pang/ppopgipang-spine/reviews/entities"
 	"github.com/ppopgi-pang/ppopgipang-spine/stores/dto"
 	"github.com/ppopgi-pang/ppopgipang-spine/stores/entities"
+	userEntities "github.com/ppopgi-pang/ppopgipang-spine/users/entities"
 	"gorm.io/gorm"
 )
 
@@ -53,7 +54,7 @@ func (s *StoreService) FindNearByStores(ctx context.Context, latitude, longitude
 
 	if filter == "scrapped" {
 		baseQuery = baseQuery.Joins(
-			"JOIN "+certEntity.UserStoreStat{}.TableName()+" uss ON uss.storeId = stores.id AND uss.userId = ? AND uss.isScrapped = 1",
+			"JOIN "+userEntities.UserStoreStat{}.TableName()+" uss ON uss.storeId = stores.id AND uss.userId = ? AND uss.isScrapped = 1",
 			*userID,
 		)
 	}
@@ -71,16 +72,16 @@ func (s *StoreService) FindNearByStores(ctx context.Context, latitude, longitude
 	}
 
 	reviewCountSub := s.db.
-		Table(reviewEntity.Review{}.TableName()).
+		Table(reviewEntities.Review{}.TableName()).
 		Select("storeId, COUNT(*) as review_count").
 		Group("storeId")
 
 	recentReviewSub := s.db.
-		Table(reviewEntity.Review{}.TableName()).
+		Table(reviewEntities.Review{}.TableName()).
 		Select("storeId, content, ROW_NUMBER() OVER (PARTITION BY storeId ORDER BY createdAt DESC, id DESC) as rn")
 
 	recentCertCountSub := s.db.
-		Table(certEntity.Certification{}.TableName()).
+		Table(certEntities.Certification{}.TableName()).
 		Select("storeId, COUNT(*) as recent_cert_count").
 		Where("occurredAt >= DATE_SUB(NOW(), INTERVAL 3 HOUR)").
 		Group("storeId")
@@ -201,7 +202,7 @@ func (s *StoreService) FindStoresInBounds(ctx context.Context, north, south, eas
 
 	if filter == "scrapped" {
 		baseQuery = baseQuery.Joins(
-			"JOIN "+certEntity.UserStoreStat{}.TableName()+" uss ON uss.storeId = stores.id AND uss.userId = ? AND uss.isScrapped = 1",
+			"JOIN "+userEntities.UserStoreStat{}.TableName()+" uss ON uss.storeId = stores.id AND uss.userId = ? AND uss.isScrapped = 1",
 			*userID,
 		)
 	}
@@ -212,16 +213,16 @@ func (s *StoreService) FindStoresInBounds(ctx context.Context, north, south, eas
 	}
 
 	reviewCountSub := s.db.
-		Table(reviewEntity.Review{}.TableName()).
+		Table(reviewEntities.Review{}.TableName()).
 		Select("storeId, COUNT(*) as review_count").
 		Group("storeId")
 
 	recentReviewSub := s.db.
-		Table(reviewEntity.Review{}.TableName()).
+		Table(reviewEntities.Review{}.TableName()).
 		Select("storeId, content, ROW_NUMBER() OVER (PARTITION BY storeId ORDER BY createdAt DESC, id DESC) as rn")
 
 	recentCertCountSub := s.db.
-		Table(certEntity.Certification{}.TableName()).
+		Table(certEntities.Certification{}.TableName()).
 		Select("storeId, COUNT(*) as recent_cert_count").
 		Where("occurredAt >= DATE_SUB(NOW(), INTERVAL 3 HOUR)").
 		Group("storeId")

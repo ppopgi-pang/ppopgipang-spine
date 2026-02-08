@@ -108,6 +108,7 @@ func NewDB() *gorm.DB {
 		&userEntity.UserLoot{},
 		&userEntity.UserProgress{},
 		&userEntity.UserSearchHistory{},
+		&userEntity.UserStoreStat{},
 		&tradeEntity.Trade{},
 		&tradeEntity.TradeChatMessage{},
 		&tradeEntity.TradeChatRoom{},
@@ -134,7 +135,6 @@ func NewDB() *gorm.DB {
 		&certificationEntity.CheckinReasonPreset{},
 		&certificationEntity.LootCommentPreset{},
 		&certificationEntity.LootLike{},
-		&certificationEntity.UserStoreStat{},
 		&careerEntity.Application{},
 		&careerEntity.JobPosting{},
 	)

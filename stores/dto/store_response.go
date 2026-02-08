@@ -20,7 +20,7 @@ type StoreResponse struct {
 	AverageRating float32           `json:"average_rating" example:"4.0"`
 	Distance      int               `json:"distance" example:"120"`
 	Type          StoreTypeResponse `json:"type"`
-	ThumbnailName *string           `json:"thumbnail_name"`
+	ThumbnailName *string           `json:"thumbnail_name" example:"store_thumbnail_2000.jpg"`
 	CreatedAt     time.Time         `json:"created_at" example:"2024-01-01T00:00:00Z"`
 	UpdatedAt     time.Time         `json:"updated_at" example:"2024-02-01T00:00:00Z"`
 }

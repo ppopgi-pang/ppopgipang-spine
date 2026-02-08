@@ -3,7 +3,7 @@ package entities
 import "time"
 
 type UserProgress struct {
-	UserID         uint       `gorm:"column:userId;primaryKey" json:"userId"`
+	UserID         int64      `gorm:"column:userId;primaryKey" json:"userId"`
 	Level          int        `gorm:"default:1" json:"level"`
 	Exp            int        `gorm:"default:0" json:"exp"`
 	StreakDays     int        `gorm:"column:streakDays;default:0" json:"streakDays"`

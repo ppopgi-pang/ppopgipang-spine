@@ -39,10 +39,13 @@ definitions:
   dto.AdminUserRequest:
     properties:
       email:
+        example: admin@ppopgipang.com
         type: string
       nickname:
+        example: 관리자
         type: string
       password:
+        example: P@ssw0rd123!
         type: string
     type: object
   dto.ApplicationJobPosting:
@@ -99,20 +102,59 @@ definitions:
         example: 접수
         type: string
     type: object
+  dto.CertificationResponse:
+    properties:
+      id:
+        example: 1001
+        type: integer
+      rewards:
+        $ref: '#/definitions/dto.RewardResponse'
+      type:
+        example: loot
+        type: string
+    type: object
   dto.CreateApplicationRequest:
     properties:
       email:
+        example: minsoo.kim@example.com
         type: string
       job_posting_id:
+        example: 101
         type: integer
       memo:
+        example: 백엔드 경력 5년입니다.
         type: string
       name:
+        example: 김민수
         type: string
       phone:
+        example: 010-1234-5678
         type: string
       resume_file_name:
+        example: resume.pdf
         type: string
+    type: object
+  dto.CreateCheckInRequest:
+    properties:
+      latitude:
+        example: 37.498
+        type: number
+      longitude:
+        example: 127.0276
+        type: number
+      rating:
+        example: good
+        type: string
+      reason_ids:
+        example:
+        - 1
+        - 2
+        items:
+          type: integer
+        type: array
+      store_id:
+        example: 2001
+        type: integer
     type: object
   dto.FindInBoundsDto:
     properties:
@@ -165,29 +207,40 @@ definitions:
   dto.JobPostingModifyRequest:
     properties:
       Department:
+        example: 플랫폼팀
         type: string
       description:
+        example: 대규모 트래픽 환경에서 API를 설계하고 운영합니다.
         type: string
       is_active:
+        example: true
         type: boolean
       location:
+        example: 서울
         type: string
       position_type:
+        example: 정규직
         type: string
       title:
+        example: 시니어 백엔드 엔지니어
         type: string
     type: object
   dto.JobPostingRequest:
     properties:
       Department:
+        example: 개발팀
         type: string
       description:
+        example: 확장 가능한 API를 구축하고 운영합니다.
         type: string
       location:
+        example: 서울
         type: string
       position_type:
+        example: 정규직
         type: string
       title:
+        example: 백엔드 엔지니어
         type: string
     type: object
   dto.JobPostingResponse:
@@ -228,6 +281,63 @@ definitions:
       count:
         example: 200
         type: integer
+    type: object
+  dto.NewBadgeResponse:
+    properties:
+      badge_image_name:
+        example: badge_first_certification.png
+        type: string
+      code:
+        example: FIRST_CERTIFICATION
+        type: string
+      description:
+        example: 첫 인증을 완료했어요
+        type: string
+      id:
+        example: 4001
+        type: integer
+      name:
+        example: 첫 인증
+        type: string
+    type: object
+  dto.RewardResponse:
+    properties:
+      current_level:
+        example: 5
+        type: integer
+      exp:
+        example: 50
+        type: integer
+      exp_to_next_level:
+        example: 150
+        type: integer
+      level_up:
+        example: true
+        type: boolean
+      new_badges:
+        items:
+          $ref: '#/definitions/dto.NewBadgeResponse'
+        type: array
+      new_level:
+        example: 6
+        type: integer
+      new_stamp:
+        $ref: '#/definitions/dto.StampResponse'
+      total_exp:
+        example: 1250
+        type: integer
+    type: object
+  dto.StampResponse:
+    properties:
+      id:
+        example: 3001
+        type: integer
+      image_name:
+        example: stamp_3001.png
+        type: string
+      store_name:
+        example: 뽑기팡 강남점
+        type: string
     type: object
   dto.StoreFindNearByResponse:
     properties:
@@ -356,6 +466,7 @@ definitions:
         example: 강남구
         type: string
       thumbnail_name:
+        example: store_thumbnail_2000.jpg
         type: string
       type:
         $ref: '#/definitions/dto.StoreTypeResponse'
@@ -372,6 +483,7 @@ definitions:
       meta:
         $ref: '#/definitions/dto.Meta'
       success:
+        example: true
         type: boolean
     type: object
   dto.StoreTypeResponse:
@@ -572,6 +684,24 @@ paths:
       summary: (관리자) 모집 공고 수정
       tags:
       - Careers
+  /certifications/checkin:
+    post:
+      description: 방문 인증을 생성하고 보상(EXP, 레벨, 스탬프, 배지)을 반환합니다.
+      parameters:
+      - description: 방문 생성 요청 DTO
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCheckInRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CertificationResponse'
+      summary: (사용자) 방문 인증 생성
+      tags:
+      - Certifications
   /commons/file-uploads:
     post:
       consumes:

@@ -277,6 +277,34 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/certifications/checkin": {
+            "post": {
+                "description": "방문 인증을 생성하고 보상(EXP, 레벨, 스탬프, 배지)을 반환합니다.",
+                "tags": [
+                    "Certifications"
+                ],
+                "summary": "(사용자) 방문 인증 생성",
+                "parameters": [
+                    {
+                        "description": "방문 생성 요청 DTO",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCheckInRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CertificationResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/commons/file-uploads": {
             "post": {
                 "description": "파일 업로드 API",
@@ -559,13 +587,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "admin@ppopgipang.com"
                 },
                 "nickname": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "관리자"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "P@ssw0rd123!"
                 }
             }
         },
@@ -645,26 +676,79 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CertificationResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1001
+                },
+                "rewards": {
+                    "$ref": "#/definitions/dto.RewardResponse"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "loot"
+                }
+            }
+        },
         "dto.CreateApplicationRequest": {
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "minsoo.kim@example.com"
                 },
                 "job_posting_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 101
                 },
                 "memo": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "백엔드 경력 5년입니다."
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "김민수"
                 },
                 "phone": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "010-1234-5678"
                 },
                 "resume_file_name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "resume.pdf"
+                }
+            }
+        },
+        "dto.CreateCheckInRequest": {
+            "type": "object",
+            "properties": {
+                "latitude": {
+                    "type": "number",
+                    "example": 37.498
+                },
+                "longitude": {
+                    "type": "number",
+                    "example": 127.0276
+                },
+                "rating": {
+                    "type": "string",
+                    "example": "good"
+                },
+                "reason_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "example": [
+                        1,
+                        2
+                    ]
+                },
+                "store_id": {
+                    "type": "integer",
+                    "example": 2001
                 }
             }
         },
@@ -743,22 +827,28 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "Department": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "플랫폼팀"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "대규모 트래픽 환경에서 API를 설계하고 운영합니다."
                 },
                 "is_active": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "location": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "서울"
                 },
                 "position_type": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "정규직"
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "시니어 백엔드 엔지니어"
                 }
             }
         },
@@ -766,19 +856,24 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "Department": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "개발팀"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "확장 가능한 API를 구축하고 운영합니다."
                 },
                 "location": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "서울"
                 },
                 "position_type": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "정규직"
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "백엔드 엔지니어"
                 }
             }
         },
@@ -833,6 +928,86 @@ const docTemplate = `{
                 "count": {
                     "type": "integer",
                     "example": 200
+                }
+            }
+        },
+        "dto.NewBadgeResponse": {
+            "type": "object",
+            "properties": {
+                "badge_image_name": {
+                    "type": "string",
+                    "example": "badge_first_certification.png"
+                },
+                "code": {
+                    "type": "string",
+                    "example": "FIRST_CERTIFICATION"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "첫 인증을 완료했어요"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 4001
+                },
+                "name": {
+                    "type": "string",
+                    "example": "첫 인증"
+                }
+            }
+        },
+        "dto.RewardResponse": {
+            "type": "object",
+            "properties": {
+                "current_level": {
+                    "type": "integer",
+                    "example": 5
+                },
+                "exp": {
+                    "type": "integer",
+                    "example": 50
+                },
+                "exp_to_next_level": {
+                    "type": "integer",
+                    "example": 150
+                },
+                "level_up": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "new_badges": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.NewBadgeResponse"
+                    }
+                },
+                "new_level": {
+                    "type": "integer",
+                    "example": 6
+                },
+                "new_stamp": {
+                    "$ref": "#/definitions/dto.StampResponse"
+                },
+                "total_exp": {
+                    "type": "integer",
+                    "example": 1250
+                }
+            }
+        },
+        "dto.StampResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 3001
+                },
+                "image_name": {
+                    "type": "string",
+                    "example": "stamp_3001.png"
+                },
+                "store_name": {
+                    "type": "string",
+                    "example": "뽑기팡 강남점"
                 }
             }
         },
@@ -1008,7 +1183,8 @@ const docTemplate = `{
                     "example": "강남구"
                 },
                 "thumbnail_name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "store_thumbnail_2000.jpg"
                 },
                 "type": {
                     "$ref": "#/definitions/dto.StoreTypeResponse"
@@ -1032,7 +1208,8 @@ const docTemplate = `{
                     "$ref": "#/definitions/dto.Meta"
                 },
                 "success": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },
