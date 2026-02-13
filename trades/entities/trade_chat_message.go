@@ -7,9 +7,9 @@ import (
 )
 
 type TradeChatMessage struct {
-	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	RoomID    uint      `gorm:"column:roomId;not null" json:"roomId"`
-	SenderID  uint      `gorm:"column:senderId;not null" json:"senderId"`
+	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id"`
+	RoomID    int64     `gorm:"column:roomId;not null" json:"roomId"`
+	SenderID  int64     `gorm:"column:senderId;not null" json:"senderId"`
 	Message   *string   `gorm:"type:text" json:"message"`
 	ImageName *string   `gorm:"column:imageName;type:varchar(255)" json:"imageName"`
 	IsRead    int8      `gorm:"column:isRead;type:tinyint;default:0" json:"isRead"`

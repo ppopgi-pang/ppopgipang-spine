@@ -3,7 +3,7 @@ module github.com/ppopgi-pang/ppopgipang-spine
 go 1.25.5
 
 require (
-	github.com/NARUBROWN/spine v0.3.5
+	github.com/NARUBROWN/spine v0.3.7
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1

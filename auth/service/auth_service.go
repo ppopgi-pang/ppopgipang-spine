@@ -70,7 +70,6 @@ func (a *AuthService) RotateRefreshToken(refreshToken string) (*RotateRefreshTok
 
 	var user userEntity.User
 	if err := a.db.Where("id = ?", payload.UserID).First(&user).Error; err != nil {
-		log.Printf("여기1")
 		return nil, err
 	}
 
@@ -98,14 +97,12 @@ func (a *AuthService) RotateRefreshToken(refreshToken string) (*RotateRefreshTok
 
 	newSigned, err := token.SignedString(a.jwtRefreshSecret)
 	if err != nil {
-		log.Printf("여기3")
 		return nil, err
 	}
 
 	// DB에 새 token id 저장 (rotate)
 	user.RefreshToken = &newTokenID
 	if err := a.db.Save(&user).Error; err != nil {
-		log.Printf("여기4")
 		return nil, err
 	}
 

@@ -3,8 +3,8 @@ package entities
 import "time"
 
 type UserSearchHistory struct {
-	ID         uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID     *uint     `gorm:"column:userId;index:idx_search_user_time" json:"userId"`
+	ID         int64     `gorm:"primaryKey;autoIncrement" json:"id"`
+	UserID     *int64    `gorm:"column:userId;index:idx_search_user_time" json:"userId"`
 	Keyword    *string   `gorm:"type:varchar(100)" json:"keyword"`
 	SearchedAt time.Time `gorm:"column:searchedAt;type:datetime(6);autoCreateTime" json:"searchedAt"`
 

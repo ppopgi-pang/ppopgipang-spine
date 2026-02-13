@@ -1,8 +1,8 @@
 package entities
 
 type CertificationReason struct {
-	CertificationID uint `gorm:"column:certificationId;primaryKey" json:"certificationId"`
-	ReasonID        uint `gorm:"column:reasonId;primaryKey" json:"reasonId"`
+	CertificationID int64 `gorm:"column:certificationId;primaryKey" json:"certificationId"`
+	ReasonID        int64 `gorm:"column:reasonId;primaryKey" json:"reasonId"`
 }
 
 func (CertificationReason) TableName() string {

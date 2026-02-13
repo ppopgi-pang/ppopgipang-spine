@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"math"
 
 	certEntities "github.com/ppopgi-pang/ppopgipang-spine/certifications/entities"
@@ -400,5 +401,94 @@ func (s *StoreService) SearchStore(ctx context.Context, keyword string, latitude
 		Meta: dto.Meta{
 			Count: total,
 		},
+	}, nil
+}
+
+func (s *StoreService) FindByStoreSummaryId(ctx context.Context, storeId int64) (dto.StoreSummaryResponse, error) {
+	db := s.db.WithContext(ctx)
+
+	var result entities.Store
+	err := db.Preload("Photos").First(&result, "id = ?", storeId).Error
+	if err != nil {
+		return dto.StoreSummaryResponse{}, err
+	}
+
+	var reviews []reviewEntities.Review
+	err = db.
+		Model(&reviewEntities.Review{}).
+		Where("storeId = ?", result.ID).
+		Scan(&reviews).
+		Error
+	if err != nil {
+		return dto.StoreSummaryResponse{}, err
+	}
+
+	imageNames := make([]string, 0, len(result.Photos))
+	for _, photo := range result.Photos {
+		imageNames = append(imageNames, *photo.ImageName)
+	}
+	return dto.StoreSummaryResponse{
+		ID:            result.ID,
+		Name:          result.Name,
+		AverageRating: result.AverageRating,
+		ImageNames:    imageNames,
+		ReviewCount:   len(reviews),
+	}, nil
+}
+
+func (s *StoreService) FindByStoreDetailId(ctx context.Context, storeId int64, userId *int64) (dto.StoreDetailResponse, error) {
+	db := s.db.WithContext(ctx)
+
+	var store entities.Store
+	err := db.
+		Model(&entities.Store{}).
+		Preload("OpeningHours", func(db *gorm.DB) *gorm.DB {
+			return db.Order("dayOfWeek ASC")
+		}).
+		Preload("Facilities").
+		First(&store, "id = ?", storeId).
+		Error
+	if err != nil {
+		return dto.StoreDetailResponse{}, err
+	}
+
+	isBookmark := false
+	if userId != nil {
+		var userStoreBookmark userEntities.UserStoreBookmark
+		bookmarkErr := db.
+			Model(&userEntities.UserStoreBookmark{}).
+			First(&userStoreBookmark, "userId = ? AND storeId = ?", *userId, storeId).
+			Error
+		if bookmarkErr == nil {
+			isBookmark = true
+		} else if !errors.Is(bookmarkErr, gorm.ErrRecordNotFound) {
+			return dto.StoreDetailResponse{}, bookmarkErr
+		}
+	}
+
+	openingHours := make([]dto.StoreOpeningHourResponse, 0, len(store.OpeningHours))
+	for _, item := range store.OpeningHours {
+		openingHours = append(openingHours, dto.StoreOpeningHourResponse{
+			ID:        item.ID,
+			DayOfWeek: item.DayOfWeek,
+			OpenTime:  item.OpenTime,
+			CloseTime: item.CloseTime,
+			IsClosed:  item.IsClosed,
+		})
+	}
+
+	facilityResponse := dto.StoreFacilityResponse{}
+	if store.Facilities != nil {
+		facilityResponse = dto.StoreFacilityResponse{
+			MachineCount:   store.Facilities.MachineCount,
+			PaymentMethods: []string(store.Facilities.PaymentMethods),
+		}
+	}
+
+	return dto.StoreDetailResponse{
+		IsBookmark:                isBookmark,
+		StoreOpeningHourResponses: openingHours,
+		Phone:                     store.Phone,
+		StoreFacilityResponse:     facilityResponse,
 	}, nil
 }

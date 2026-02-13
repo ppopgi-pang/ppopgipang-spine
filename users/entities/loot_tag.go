@@ -3,7 +3,7 @@ package entities
 import "time"
 
 type LootTag struct {
-	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name      string    `gorm:"type:varchar(50);not null" json:"name"`             // 태그명 (예: 인형, 피규어)
 	IconName  *string   `gorm:"column:iconName;type:varchar(100)" json:"iconName"` // 아이콘 이미지 경로
 	SortOrder int       `gorm:"column:sortOrder;default:0;index:idx_loot_tags_active" json:"sortOrder"`

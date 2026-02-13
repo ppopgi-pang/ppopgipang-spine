@@ -108,6 +108,7 @@ func NewDB() *gorm.DB {
 		&userEntity.UserLoot{},
 		&userEntity.UserProgress{},
 		&userEntity.UserSearchHistory{},
+		&userEntity.UserStoreBookmark{},
 		&userEntity.UserStoreStat{},
 		&tradeEntity.Trade{},
 		&tradeEntity.TradeChatMessage{},

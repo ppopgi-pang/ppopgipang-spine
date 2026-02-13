@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/NARUBROWN/spine/pkg/httpx"
+	"github.com/NARUBROWN/spine/pkg/path"
 	"github.com/NARUBROWN/spine/pkg/query"
 	"github.com/NARUBROWN/spine/pkg/spine"
 	"github.com/ppopgi-pang/ppopgipang-spine/auth/utils"
@@ -122,6 +123,39 @@ func (s *StoreController) SearchStore(ctx context.Context, query query.Values, m
 	}
 
 	return httpx.Response[dto.StoreSearchResponse]{
+		Body: result,
+	}, nil
+}
+
+// @Summary (사용자) 가게 기본 정보
+// @Description 사용자 가게 기본 정보 API입니다.
+// @Tags Stores
+// @Param storeId path int64 true "스토어 ID"
+// @Success 200 {object} dto.StoreSummaryResponse
+// @Router /stores/summary/{storeId} [GET]
+func (s *StoreController) FindByStoreSummaryId(ctx context.Context, storeId path.Int) (httpx.Response[dto.StoreSummaryResponse], error) {
+	result, err := s.service.FindByStoreSummaryId(ctx, storeId.Value)
+	if err != nil {
+		return httpx.Response[dto.StoreSummaryResponse]{}, err
+	}
+	return httpx.Response[dto.StoreSummaryResponse]{
+		Body: result,
+	}, nil
+}
+
+// @Summary (사용자) 가게 정보
+// @Description 사용자 가게 정보 API입니다.
+// @Tags Stores
+// @Param storeId path int64 true "스토어 ID"
+// @Success 200 {object} dto.StoreDetailResponse
+// @Router /stores/details/{storeId} [GET]
+func (s *StoreController) FindByStoreDetailId(ctx context.Context, storeId path.Int, spineCtx spine.Ctx) (httpx.Response[dto.StoreDetailResponse], error) {
+	userId, _ := utils.GetAuthUserID(spineCtx)
+	result, err := s.service.FindByStoreDetailId(ctx, storeId.Value, userId)
+	if err != nil {
+		return httpx.Response[dto.StoreDetailResponse]{}, err
+	}
+	return httpx.Response[dto.StoreDetailResponse]{
 		Body: result,
 	}, nil
 }

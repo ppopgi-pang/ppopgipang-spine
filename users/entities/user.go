@@ -16,8 +16,9 @@ type User struct {
 	UpdatedAt     time.Time `gorm:"column:updatedAt;type:datetime(6);autoUpdateTime" json:"updatedAt"`
 
 	// Associations
-	UserProgress *UserProgress `gorm:"foreignKey:UserID" json:"userProgress,omitempty"`
-	UserLoots    []UserLoot    `gorm:"foreignKey:UserID" json:"userLoots,omitempty"`
+	UserProgress       *UserProgress       `gorm:"foreignKey:UserID" json:"userProgress,omitempty"`
+	UserLoots          []UserLoot          `gorm:"foreignKey:UserID" json:"userLoots,omitempty"`
+	UserStoreBookmarks []UserStoreBookmark `gorm:"foreignKey:UserID" json:"userStoreBookmarks,omitempty"`
 }
 
 func (User) TableName() string {

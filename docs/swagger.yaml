@@ -339,6 +339,28 @@ definitions:
         example: 뽑기팡 강남점
         type: string
     type: object
+  dto.StoreDetailResponse:
+    properties:
+      is_bookmark:
+        type: boolean
+      phone:
+        type: string
+      store_facility_response:
+        $ref: '#/definitions/dto.StoreFacilityResponse'
+      store_opening_hour_responses:
+        items:
+          $ref: '#/definitions/dto.StoreOpeningHourResponse'
+        type: array
+    type: object
+  dto.StoreFacilityResponse:
+    properties:
+      machine_count:
+        type: integer
+      payment_methods:
+        items:
+          type: string
+        type: array
+    type: object
   dto.StoreFindNearByResponse:
     properties:
       address:
@@ -430,6 +452,21 @@ definitions:
         example: "2024-02-07T14:30:00Z"
         type: string
     type: object
+  dto.StoreOpeningHourResponse:
+    properties:
+      closeTime:
+        type: string
+      dayOfWeek:
+        format: int32
+        type: integer
+      id:
+        format: int64
+        type: integer
+      isClosed:
+        type: boolean
+      openTime:
+        type: string
+    type: object
   dto.StoreResponse:
     properties:
       address:
@@ -454,7 +491,7 @@ definitions:
         example: 127.035
         type: number
       name:
-        example: 뽀끼빵 매장
+        example: 뽑기팡 매장
         type: string
       phone:
         example: 02-555-1234
@@ -485,6 +522,25 @@ definitions:
       success:
         example: true
         type: boolean
+    type: object
+  dto.StoreSummaryResponse:
+    properties:
+      average_rating:
+        example: 4
+        type: number
+      id:
+        example: 2000
+        type: integer
+      image_names:
+        items:
+          type: string
+        type: array
+      name:
+        example: 뽑기팡 매장
+        type: string
+      review_count:
+        example: 100
+        type: integer
     type: object
   dto.StoreTypeResponse:
     properties:
@@ -734,6 +790,24 @@ paths:
       summary: (사용자) 가장 최근의 미해결 업적 진행상황 조회
       tags:
       - Gamification
+  /stores/details/{storeId}:
+    get:
+      description: 사용자 가게 정보 API입니다.
+      parameters:
+      - description: 스토어 ID
+        format: int64
+        in: path
+        name: storeId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StoreDetailResponse'
+      summary: (사용자) 가게 정보
+      tags:
+      - Stores
   /stores/in-bounds:
     get:
       description: 지도 바운즈(북/남/동/서) 좌표로 매장 목록을 키워드로 조회합니다.
@@ -853,6 +927,24 @@ paths:
           schema:
             $ref: '#/definitions/dto.StoreSearchResponse'
       summary: (사용자) 가게 검색
+      tags:
+      - Stores
+  /stores/summary/{storeId}:
+    get:
+      description: 사용자 가게 기본 정보 API입니다.
+      parameters:
+      - description: 스토어 ID
+        format: int64
+        in: path
+        name: storeId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StoreSummaryResponse'
+      summary: (사용자) 가게 기본 정보
       tags:
       - Stores
 swagger: "2.0"

@@ -32,3 +32,5 @@ go.work.sum
 .vscode/
 
 /uploads/*
+
+.DS_Store

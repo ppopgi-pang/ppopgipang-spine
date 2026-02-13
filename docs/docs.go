@@ -354,6 +354,33 @@ const docTemplate = `{
                 }
             }
         },
+        "/stores/details/{storeId}": {
+            "get": {
+                "description": "사용자 가게 정보 API입니다.",
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "(사용자) 가게 정보",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "스토어 ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.StoreDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/stores/in-bounds": {
             "get": {
                 "description": "지도 바운즈(북/남/동/서) 좌표로 매장 목록을 키워드로 조회합니다.",
@@ -527,6 +554,33 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.StoreSearchResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stores/summary/{storeId}": {
+            "get": {
+                "description": "사용자 가게 기본 정보 API입니다.",
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "(사용자) 가게 기본 정보",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "스토어 ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.StoreSummaryResponse"
                         }
                     }
                 }
@@ -1011,6 +1065,40 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.StoreDetailResponse": {
+            "type": "object",
+            "properties": {
+                "is_bookmark": {
+                    "type": "boolean"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "store_facility_response": {
+                    "$ref": "#/definitions/dto.StoreFacilityResponse"
+                },
+                "store_opening_hour_responses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.StoreOpeningHourResponse"
+                    }
+                }
+            }
+        },
+        "dto.StoreFacilityResponse": {
+            "type": "object",
+            "properties": {
+                "machine_count": {
+                    "type": "integer"
+                },
+                "payment_methods": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "dto.StoreFindNearByResponse": {
             "type": "object",
             "properties": {
@@ -1135,6 +1223,28 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.StoreOpeningHourResponse": {
+            "type": "object",
+            "properties": {
+                "closeTime": {
+                    "type": "string"
+                },
+                "dayOfWeek": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "isClosed": {
+                    "type": "boolean"
+                },
+                "openTime": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.StoreResponse": {
             "type": "object",
             "properties": {
@@ -1168,7 +1278,7 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string",
-                    "example": "뽀끼빵 매장"
+                    "example": "뽑기팡 매장"
                 },
                 "phone": {
                     "type": "string",
@@ -1210,6 +1320,33 @@ const docTemplate = `{
                 "success": {
                     "type": "boolean",
                     "example": true
+                }
+            }
+        },
+        "dto.StoreSummaryResponse": {
+            "type": "object",
+            "properties": {
+                "average_rating": {
+                    "type": "number",
+                    "example": 4
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 2000
+                },
+                "image_names": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "example": "뽑기팡 매장"
+                },
+                "review_count": {
+                    "type": "integer",
+                    "example": 100
                 }
             }
         },

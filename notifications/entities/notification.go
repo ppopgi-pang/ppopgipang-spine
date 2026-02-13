@@ -8,8 +8,8 @@ import (
 )
 
 type Notification struct {
-	ID        uint          `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID    *uint         `gorm:"column:userId;index:idx_noti_user_read" json:"userId"`
+	ID        int64         `gorm:"primaryKey;autoIncrement" json:"id"`
+	UserID    *int64        `gorm:"column:userId;index:idx_noti_user_read" json:"userId"`
 	Type      *string       `gorm:"type:varchar(50)" json:"type"` // level_up, trade_msg, store_hot, etc
 	Title     *string       `gorm:"type:varchar(100)" json:"title"`
 	Message   *string       `gorm:"type:varchar(255)" json:"message"`

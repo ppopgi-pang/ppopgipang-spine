@@ -7,8 +7,8 @@ import (
 )
 
 type LootLike struct {
-	UserID          uint      `gorm:"column:userId;primaryKey" json:"userId"`
-	CertificationID uint      `gorm:"column:certificationId;primaryKey" json:"certificationId"`
+	UserID          int64     `gorm:"column:userId;primaryKey" json:"userId"`
+	CertificationID int64     `gorm:"column:certificationId;primaryKey" json:"certificationId"`
 	CreatedAt       time.Time `gorm:"column:createdAt;type:datetime(6);autoCreateTime" json:"createdAt"`
 
 	// Associations

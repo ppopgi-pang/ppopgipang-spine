@@ -3,7 +3,7 @@ package entities
 import "time"
 
 type LootCommentPreset struct {
-	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id"`
 	Content   string    `gorm:"type:varchar(100);not null" json:"content"` // 프리셋 내용
 	SortOrder int       `gorm:"column:sortOrder;default:0;index:idx_loot_comment_presets_active" json:"sortOrder"`
 	IsActive  int8      `gorm:"column:isActive;type:tinyint;default:1;index:idx_loot_comment_presets_active" json:"isActive"`

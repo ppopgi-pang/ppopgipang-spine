@@ -3,9 +3,9 @@ package entities
 import "time"
 
 type UserLoot struct {
-	ID              uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID          *uint     `gorm:"column:userId" json:"userId"`
-	CertificationID *uint     `gorm:"column:certificationId" json:"certificationId"` // 어떤 인증을 통해 획득했는지
+	ID              int64     `gorm:"primaryKey;autoIncrement" json:"id"`
+	UserID          *int64    `gorm:"column:userId" json:"userId"`
+	CertificationID *int64    `gorm:"column:certificationId" json:"certificationId"` // 어떤 인증을 통해 획득했는지
 	Title           *string   `gorm:"type:varchar(100)" json:"title"`                // 유저가 입력하거나 AI가 추천한 이름
 	Category        *string   `gorm:"type:varchar(50)" json:"category"`              // 인형, 피규어, 키링 등
 	EstimatedPrice  *int      `gorm:"column:estimatedPrice" json:"estimatedPrice"`   // 시장 추정가

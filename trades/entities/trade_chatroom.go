@@ -7,10 +7,10 @@ import (
 )
 
 type TradeChatRoom struct {
-	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	TradeID   uint      `gorm:"column:tradeId;not null" json:"tradeId"`
-	SellerID  uint      `gorm:"column:sellerId;not null" json:"sellerId"`
-	BuyerID   uint      `gorm:"column:buyerId;not null" json:"buyerId"`
+	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id"`
+	TradeID   int64     `gorm:"column:tradeId;not null" json:"tradeId"`
+	SellerID  int64     `gorm:"column:sellerId;not null" json:"sellerId"`
+	BuyerID   int64     `gorm:"column:buyerId;not null" json:"buyerId"`
 	CreatedAt time.Time `gorm:"column:createdAt;type:datetime(6);autoCreateTime" json:"createdAt"`
 	UpdatedAt time.Time `gorm:"column:updatedAt;type:datetime(6);autoUpdateTime" json:"updatedAt"`
 

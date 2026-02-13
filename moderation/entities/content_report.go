@@ -7,10 +7,10 @@ import (
 )
 
 type ContentReport struct {
-	ID          uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	ReporterID  *uint     `gorm:"column:reporterId" json:"reporterId"`
+	ID          int64     `gorm:"primaryKey;autoIncrement" json:"id"`
+	ReporterID  *int64    `gorm:"column:reporterId" json:"reporterId"`
 	TargetType  string    `gorm:"column:targetType;type:enum('certification','trade','chat','store');not null" json:"targetType"`
-	TargetID    uint      `gorm:"column:targetId;not null" json:"targetId"`
+	TargetID    int64     `gorm:"column:targetId;not null" json:"targetId"`
 	Reason      *string   `gorm:"type:varchar(100)" json:"reason"`
 	Description *string   `gorm:"type:text" json:"description"`
 	Status      string    `gorm:"type:enum('open','resolved','rejected');default:open" json:"status"`
