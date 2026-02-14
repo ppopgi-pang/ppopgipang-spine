@@ -143,7 +143,7 @@ func (s *StoreController) FindByStoreSummaryId(ctx context.Context, storeId path
 	}, nil
 }
 
-// @Summary (사용자) 가게 정보
+// @Summary (사용자) 가게 상세 페이지 가게정보 탭
 // @Description 사용자 가게 정보 API입니다.
 // @Tags Stores
 // @Param storeId path int64 true "스토어 ID"
@@ -156,6 +156,39 @@ func (s *StoreController) FindByStoreDetailId(ctx context.Context, storeId path.
 		return httpx.Response[dto.StoreDetailResponse]{}, err
 	}
 	return httpx.Response[dto.StoreDetailResponse]{
+		Body: result,
+	}, nil
+}
+
+// @Summary (사용자) 가게 상세 페이지 방문내역 탭
+// @Description 사용자 방문 내역 API입니다.
+// @Tags Stores
+// @Param storeId path int64 true "스토어 ID"
+// @Success 200 {object} dto.VisitHistoryResponse
+// @Router /stores/visits/{storeId} [GET]
+func (s *StoreController) GetStoreStatById(ctx context.Context, storeId path.Int, spineCtx spine.Ctx) (httpx.Response[dto.VisitHistoryResponse], error) {
+	userId, _ := utils.GetAuthUserID(spineCtx)
+	result, err := s.service.GetStoreStatById(ctx, storeId.Value, userId)
+	if err != nil {
+		return httpx.Response[dto.VisitHistoryResponse]{}, err
+	}
+	return httpx.Response[dto.VisitHistoryResponse]{
+		Body: result,
+	}, nil
+}
+
+// @Summary (사용자) 가게 상세 페이지 리뷰 탭
+// @Description 가세 상세 페이지 리뷰 API입니다.
+// @Tags Stores
+// @Param storeId path int64 true "스토어 ID"
+// @Success 200 {object} dto.StoreReviewResponse
+// @Router /stores/reviews/{storeId} [GET]
+func (s *StoreController) GetStoreReviewsById(ctx context.Context, storeId path.Int) (httpx.Response[dto.StoreReviewResponse], error) {
+	result, err := s.service.GetStoreReviewsById(ctx, storeId.Value)
+	if err != nil {
+		return httpx.Response[dto.StoreReviewResponse]{}, err
+	}
+	return httpx.Response[dto.StoreReviewResponse]{
 		Body: result,
 	}, nil
 }

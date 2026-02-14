@@ -360,7 +360,7 @@ const docTemplate = `{
                 "tags": [
                     "Stores"
                 ],
-                "summary": "(사용자) 가게 정보",
+                "summary": "(사용자) 가게 상세 페이지 가게정보 탭",
                 "parameters": [
                     {
                         "type": "integer",
@@ -505,6 +505,33 @@ const docTemplate = `{
                 }
             }
         },
+        "/stores/reviews/{storeId}": {
+            "get": {
+                "description": "가세 상세 페이지 리뷰 API입니다.",
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "(사용자) 가게 상세 페이지 리뷰 탭",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "스토어 ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.StoreReviewResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/stores/search": {
             "get": {
                 "description": "사용자 가게 검색 API입니다.",
@@ -581,6 +608,33 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.StoreSummaryResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stores/visits/{storeId}": {
+            "get": {
+                "description": "사용자 방문 내역 API입니다.",
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "(사용자) 가게 상세 페이지 방문내역 탭",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "스토어 ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.VisitHistoryResponse"
                         }
                     }
                 }
@@ -985,6 +1039,14 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.MyStat": {
+            "type": "object",
+            "properties": {
+                "visit_count": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.NewBadgeResponse": {
             "type": "object",
             "properties": {
@@ -1007,6 +1069,46 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "첫 인증"
+                }
+            }
+        },
+        "dto.OtherUserStat": {
+            "type": "object",
+            "properties": {
+                "average_visit_count": {
+                    "type": "integer"
+                },
+                "max_visit_count": {
+                    "type": "integer"
+                },
+                "monthly_visitor_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ReviewResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "rating": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -1305,6 +1407,23 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.StoreReviewResponse": {
+            "type": "object",
+            "properties": {
+                "review_images": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "reviews_responses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ReviewResponse"
+                    }
+                }
+            }
+        },
         "dto.StoreSearchResponse": {
             "type": "object",
             "properties": {
@@ -1364,6 +1483,29 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "카페"
+                }
+            }
+        },
+        "dto.VisitHistoryResponse": {
+            "type": "object",
+            "properties": {
+                "my_stat": {
+                    "$ref": "#/definitions/dto.MyStat"
+                },
+                "other_user_stat": {
+                    "$ref": "#/definitions/dto.OtherUserStat"
+                },
+                "review_images": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "reviews_responses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ReviewResponse"
+                    }
                 }
             }
         }

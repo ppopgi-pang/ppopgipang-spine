@@ -6,6 +6,7 @@ import (
 	"math"
 
 	certEntities "github.com/ppopgi-pang/ppopgipang-spine/certifications/entities"
+	reviewDtos "github.com/ppopgi-pang/ppopgipang-spine/reviews/dto"
 	reviewEntities "github.com/ppopgi-pang/ppopgipang-spine/reviews/entities"
 	"github.com/ppopgi-pang/ppopgipang-spine/stores/dto"
 	"github.com/ppopgi-pang/ppopgipang-spine/stores/entities"
@@ -490,5 +491,114 @@ func (s *StoreService) FindByStoreDetailId(ctx context.Context, storeId int64, u
 		StoreOpeningHourResponses: openingHours,
 		Phone:                     store.Phone,
 		StoreFacilityResponse:     facilityResponse,
+	}, nil
+}
+
+func (s *StoreService) GetStoreStatById(ctx context.Context, storeId int64, userId *int64) (dto.VisitHistoryResponse, error) {
+	db := s.db.WithContext(ctx)
+
+	// UserID, StoreID로 MyStat 조회
+	var myStat *dto.MyStat
+	if userId != nil {
+		var myStoreStat userEntities.UserStoreStat
+		err := db.
+			Model(&userEntities.UserStoreStat{}).
+			First(&myStoreStat, "userId = ? AND storeId = ?", *userId, storeId).Error
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return dto.VisitHistoryResponse{}, err
+		}
+		if err == nil {
+			myStat = &dto.MyStat{
+				VisitCount: myStoreStat.VisitCount,
+			}
+		}
+	}
+	// StoreID로 Stat 집계하여 평균 방문수, 최대 방문수, 한달 방문수 추출
+	type storeStatAggregate struct {
+		AverageVisitCount   float64 `gorm:"column:averageVisitCount"`
+		MaxVisitCount       int     `gorm:"column:maxVisitCount"`
+		MonthlyVisitorCount int     `gorm:"column:monthlyVisitorCount"`
+	}
+	var aggregate storeStatAggregate
+	err := db.
+		Model(&userEntities.UserStoreStat{}).
+		Select(
+			"COALESCE(AVG(visitCount), 0) as averageVisitCount, "+
+				"COALESCE(MAX(visitCount), 0) as maxVisitCount, "+
+				"COALESCE(SUM(CASE WHEN lastVisitedAt >= DATE_SUB(NOW(), INTERVAL 1 MONTH) THEN 1 ELSE 0 END), 0) as monthlyVisitorCount",
+		).
+		Where("storeId = ?", storeId).
+		Scan(&aggregate).Error
+	if err != nil {
+		return dto.VisitHistoryResponse{}, err
+	}
+
+	// StoreID로 Review 조회
+	var reviews []reviewEntities.Review
+	err = db.
+		Model(&reviewEntities.Review{}).
+		Where("storeId = ?", storeId).
+		Order("createdAt DESC, id DESC").
+		Find(&reviews).Error
+	if err != nil {
+		return dto.VisitHistoryResponse{}, err
+	}
+
+	reviewImages := make([]string, 0)
+	reviewResponses := make([]reviewDtos.ReviewResponse, 0, len(reviews))
+	for _, review := range reviews {
+		reviewResponses = append(reviewResponses, reviewDtos.ReviewResponse{
+			ID:        review.ID,
+			Rating:    review.Rating,
+			Content:   review.Content,
+			Images:    []string(review.Images),
+			CreatedAt: review.CreatedAt,
+			UpdatedAt: review.UpdatedAt,
+		})
+		reviewImages = append(reviewImages, []string(review.Images)...)
+	}
+
+	return dto.VisitHistoryResponse{
+		MyStat: myStat,
+		OtherUserStat: dto.OtherUserStat{
+			AverageVisitCount:   int(math.Round(aggregate.AverageVisitCount)),
+			MaxVisitCount:       aggregate.MaxVisitCount,
+			MonthlyVisitorCount: aggregate.MonthlyVisitorCount,
+		},
+		ReviewImages:    reviewImages,
+		ReviewResponses: reviewResponses,
+	}, nil
+}
+
+func (s *StoreService) GetStoreReviewsById(ctx context.Context, storeId int64) (dto.StoreReviewResponse, error) {
+	db := s.db.WithContext(ctx)
+
+	var reviews []reviewEntities.Review
+	err := db.
+		Model(&reviewEntities.Review{}).
+		Where("storeId = ?", storeId).
+		Order("createdAt DESC, id DESC").
+		Find(&reviews).Error
+	if err != nil {
+		return dto.StoreReviewResponse{}, err
+	}
+
+	reviewImages := make([]string, 0)
+	reviewResponses := make([]reviewDtos.ReviewResponse, 0, len(reviews))
+	for _, review := range reviews {
+		reviewResponses = append(reviewResponses, reviewDtos.ReviewResponse{
+			ID:        review.ID,
+			Rating:    review.Rating,
+			Content:   review.Content,
+			Images:    []string(review.Images),
+			CreatedAt: review.CreatedAt,
+			UpdatedAt: review.UpdatedAt,
+		})
+		reviewImages = append(reviewImages, []string(review.Images)...)
+	}
+
+	return dto.StoreReviewResponse{
+		ReviewImages:    reviewImages,
+		ReviewResponses: reviewResponses,
 	}, nil
 }

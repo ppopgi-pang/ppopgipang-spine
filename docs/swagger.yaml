@@ -282,6 +282,11 @@ definitions:
         example: 200
         type: integer
     type: object
+  dto.MyStat:
+    properties:
+      visit_count:
+        type: integer
+    type: object
   dto.NewBadgeResponse:
     properties:
       badge_image_name:
@@ -298,6 +303,32 @@ definitions:
         type: integer
       name:
         example: 첫 인증
+        type: string
+    type: object
+  dto.OtherUserStat:
+    properties:
+      average_visit_count:
+        type: integer
+      max_visit_count:
+        type: integer
+      monthly_visitor_count:
+        type: integer
+    type: object
+  dto.ReviewResponse:
+    properties:
+      content:
+        type: string
+      create_at:
+        type: string
+      id:
+        type: integer
+      images:
+        items:
+          type: string
+        type: array
+      rating:
+        type: integer
+      updated_at:
         type: string
     type: object
   dto.RewardResponse:
@@ -511,6 +542,17 @@ definitions:
         example: "2024-02-01T00:00:00Z"
         type: string
     type: object
+  dto.StoreReviewResponse:
+    properties:
+      review_images:
+        items:
+          type: string
+        type: array
+      reviews_responses:
+        items:
+          $ref: '#/definitions/dto.ReviewResponse'
+        type: array
+    type: object
   dto.StoreSearchResponse:
     properties:
       data:
@@ -553,6 +595,21 @@ definitions:
       name:
         example: 카페
         type: string
+    type: object
+  dto.VisitHistoryResponse:
+    properties:
+      my_stat:
+        $ref: '#/definitions/dto.MyStat'
+      other_user_stat:
+        $ref: '#/definitions/dto.OtherUserStat'
+      review_images:
+        items:
+          type: string
+        type: array
+      reviews_responses:
+        items:
+          $ref: '#/definitions/dto.ReviewResponse'
+        type: array
     type: object
 host: localhost:8080
 info:
@@ -805,7 +862,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.StoreDetailResponse'
-      summary: (사용자) 가게 정보
+      summary: (사용자) 가게 상세 페이지 가게정보 탭
       tags:
       - Stores
   /stores/in-bounds:
@@ -892,6 +949,24 @@ paths:
       summary: (공통) 주변 매장 조회
       tags:
       - Stores
+  /stores/reviews/{storeId}:
+    get:
+      description: 가세 상세 페이지 리뷰 API입니다.
+      parameters:
+      - description: 스토어 ID
+        format: int64
+        in: path
+        name: storeId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StoreReviewResponse'
+      summary: (사용자) 가게 상세 페이지 리뷰 탭
+      tags:
+      - Stores
   /stores/search:
     get:
       description: 사용자 가게 검색 API입니다.
@@ -945,6 +1020,24 @@ paths:
           schema:
             $ref: '#/definitions/dto.StoreSummaryResponse'
       summary: (사용자) 가게 기본 정보
+      tags:
+      - Stores
+  /stores/visits/{storeId}:
+    get:
+      description: 사용자 방문 내역 API입니다.
+      parameters:
+      - description: 스토어 ID
+        format: int64
+        in: path
+        name: storeId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.VisitHistoryResponse'
+      summary: (사용자) 가게 상세 페이지 방문내역 탭
       tags:
       - Stores
 swagger: "2.0"
