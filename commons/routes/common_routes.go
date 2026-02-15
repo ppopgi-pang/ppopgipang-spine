@@ -7,4 +7,5 @@ import (
 
 func RegisterCommonRoutes(app spine.App) {
 	app.Route("POST", "/commons/file-uploads", (*controller.CommonController).UploadFiles)
+	app.Route("GET", "/commons/images/:path/:fileName", (*controller.CommonController).GetFile)
 }

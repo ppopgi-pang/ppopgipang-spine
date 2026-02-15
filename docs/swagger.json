@@ -331,6 +331,32 @@
                 }
             }
         },
+        "/commons/images/{path}/{fileName}": {
+            "get": {
+                "description": "이미지 확인 API",
+                "tags": [
+                    "Commons"
+                ],
+                "summary": "(공통) 이미지 확인",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "파일 경로",
+                        "name": "path",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "파일명 (확장자 포함)",
+                        "name": "fileName",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/gamification/achievement/main": {
             "get": {
                 "description": "맵 화면에서 가장 최근의 미해결된 업적의 진행상황을 조회하는 API입니다.",

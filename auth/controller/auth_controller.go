@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/NARUBROWN/spine/pkg/httperr"
@@ -21,7 +22,7 @@ func NewAuthController(service *service.AuthService) *AuthController {
 	return &AuthController{service: service}
 }
 
-func (a *AuthController) KakaoCallback(ctx context.Context, code query.Values, spineCtx spine.Ctx) (httpx.Redirect, error) {
+func (a *AuthController) KakaoCallback(ctx context.Context, query query.Values, spineCtx spine.Ctx) (httpx.Redirect, error) {
 	userAny, ok := spineCtx.Get("auth.user")
 	if !ok {
 		panic(httperr.Unauthorized("인증 정보가 없습니다."))
@@ -37,15 +38,30 @@ func (a *AuthController) KakaoCallback(ctx context.Context, code query.Values, s
 		return httpx.Redirect{}, err
 	}
 
-	return httpx.Redirect{
-		Location: "http://localhost:3000/auth/kakao/callback",
-		Options: httpx.ResponseOptions{
-			Cookies: []httpx.Cookie{
-				httpx.AccessTokenCookie(accessToken, 5*time.Minute),
-				httpx.RefreshTokenCookie(refreshToken, 7*24*time.Hour),
+	state := query.String("state")
+	switch state {
+	case "dev":
+		return httpx.Redirect{
+			Location: "http://localhost:5173/auth/callback/kakao",
+			Options: httpx.ResponseOptions{
+				Cookies: []httpx.Cookie{
+					httpx.AccessTokenCookie(accessToken, 5*time.Minute),
+					httpx.RefreshTokenCookie(refreshToken, 7*24*time.Hour),
+				},
 			},
-		},
-	}, nil
+		}, nil
+	case "prod":
+		return httpx.Redirect{
+			Location: "https://ppopgi.me/auth/callback/kakao",
+			Options: httpx.ResponseOptions{
+				Cookies: []httpx.Cookie{
+					httpx.AccessTokenCookie(accessToken, 5*time.Minute),
+					httpx.RefreshTokenCookie(refreshToken, 7*24*time.Hour),
+				},
+			},
+		}, nil
+	}
+	return httpx.Redirect{}, errors.New("state가 비어있습니다.")
 }
 
 // @Summary (관리자) 어드민 계정 생성
