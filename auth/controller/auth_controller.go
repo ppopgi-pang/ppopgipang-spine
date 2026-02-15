@@ -42,7 +42,7 @@ func (a *AuthController) KakaoCallback(ctx context.Context, query query.Values, 
 	switch state {
 	case "dev":
 		return httpx.Redirect{
-			Location: "http://localhost:5173/auth/callback/kakao",
+			Location: "https://localhost:5173/auth/callback/kakao",
 			Options: httpx.ResponseOptions{
 				Cookies: []httpx.Cookie{
 					httpx.AccessTokenCookie(accessToken, 5*time.Minute),
