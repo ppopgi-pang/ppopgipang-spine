@@ -6,6 +6,8 @@ github.com/NARUBROWN/spine v0.3.5 h1:51QnbJiOLPC62TQl/0gJ5d2mhIsfCnz42o7pjp0VOjs
 github.com/NARUBROWN/spine v0.3.5/go.mod h1:9516TfRndN+x6DMtJW67PdN3E/+R3pzrkpK91hK545Y=
 github.com/NARUBROWN/spine v0.3.7 h1:mM+hJjyH1Bjz52jXX2nhfN4LetsVF8rM+mALRpjXEuQ=
 github.com/NARUBROWN/spine v0.3.7/go.mod h1:9516TfRndN+x6DMtJW67PdN3E/+R3pzrkpK91hK545Y=
+github.com/NARUBROWN/spine v0.3.8 h1:CkO1nWI0yu1kF6DbkR/m8CPaaEP+U9cAcnDBQSrVJzI=
+github.com/NARUBROWN/spine v0.3.8/go.mod h1:9516TfRndN+x6DMtJW67PdN3E/+R3pzrkpK91hK545Y=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
