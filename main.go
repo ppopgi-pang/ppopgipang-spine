@@ -224,9 +224,10 @@ func main() {
 
 	app.Interceptor(
 		cors.New(cors.Config{
-			AllowOrigins: []string{"*"},
-			AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "OPTIONS"},
-			AllowHeaders: []string{"Content-Type"},
+			AllowOrigins:     []string{"https://localhost:5173", "https://ppopgi.me"},
+			AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "OPTIONS"},
+			AllowHeaders:     []string{"Content-Type"},
+			AllowCredentials: true,
 		}),
 	)
 
