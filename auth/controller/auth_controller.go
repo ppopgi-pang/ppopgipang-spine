@@ -52,7 +52,7 @@ func (a *AuthController) KakaoCallback(ctx context.Context, query query.Values, 
 						Secure:   false,
 						HttpOnly: true,
 						SameSite: "None",
-						MaxAge:   int((5 * time.Second).Seconds()),
+						MaxAge:   int((5 * time.Minute).Seconds()),
 					},
 					{
 						Name:     "refreshToken",
