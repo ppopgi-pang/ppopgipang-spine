@@ -202,7 +202,6 @@ func (g *GamificationService) updateStoreStats(db *gorm.DB, userId int64, storeI
 				LootCount:     lootCount,
 				LastVisitedAt: &nowTime,
 				Tier:          "visited",
-				IsScrapped:    false,
 			}
 		} else {
 			return err

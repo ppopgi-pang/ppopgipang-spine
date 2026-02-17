@@ -12,7 +12,6 @@ type UserStoreStat struct {
 	VisitCount    int        `gorm:"column:visitCount;default:0" json:"visitCount"`
 	LootCount     int        `gorm:"column:lootCount;default:0" json:"lootCount"`
 	LastVisitedAt *time.Time `gorm:"column:lastVisitedAt;type:datetime(6)" json:"lastVisitedAt"`
-	IsScrapped    bool       `gorm:"column:isScrapped;type:boolean;not null;default:0" json:"isScrapped"`
 	Tier          string     `gorm:"type:enum('unknown','visited','master');default:unknown" json:"tier"`
 
 	// Associations

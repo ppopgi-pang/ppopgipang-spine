@@ -56,7 +56,7 @@ func (s *StoreService) FindNearByStores(ctx context.Context, latitude, longitude
 
 	if filter == "scrapped" {
 		baseQuery = baseQuery.Joins(
-			"JOIN "+userEntities.UserStoreStat{}.TableName()+" uss ON uss.storeId = stores.id AND uss.userId = ? AND uss.isScrapped = 1",
+			"JOIN "+userEntities.UserStoreBookmark{}.TableName()+" usb ON usb.storeId = stores.id AND usb.userId = ?",
 			*userID,
 		)
 	}
@@ -204,7 +204,7 @@ func (s *StoreService) FindStoresInBounds(ctx context.Context, north, south, eas
 
 	if filter == "scrapped" {
 		baseQuery = baseQuery.Joins(
-			"JOIN "+userEntities.UserStoreStat{}.TableName()+" uss ON uss.storeId = stores.id AND uss.userId = ? AND uss.isScrapped = 1",
+			"JOIN "+userEntities.UserStoreBookmark{}.TableName()+" usb ON usb.storeId = stores.id AND usb.userId = ?",
 			*userID,
 		)
 	}

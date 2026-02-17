@@ -245,14 +245,14 @@ INSERT INTO `user_store_bookmarks` (`id`, `userId`, `storeId`, `createdAt`) VALU
   (5, 2, 4, '2026-02-06 22:30:00.000000'),
   (6, 3, 1, '2026-02-07 11:15:00.000000');
 
-INSERT INTO `user_store_stats` (`userId`, `storeId`, `visitCount`, `lootCount`, `lastVisitedAt`, `isScrapped`, `tier`) VALUES
-  (2, 1, 6, 2, '2026-02-12 19:50:00.000000', 1, 'master'),
-  (3, 2, 3, 0, '2026-02-12 18:10:00.000000', 1, 'visited'),
-  (1, 1, 1, 0, '2026-02-08 15:00:00.000000', 0, 'visited'),
-  (4, 3, 8, 3, '2026-02-12 22:40:00.000000', 1, 'master'),
-  (5, 4, 5, 2, '2026-02-12 21:55:00.000000', 1, 'visited'),
-  (2, 4, 2, 0, '2026-02-11 22:00:00.000000', 1, 'visited'),
-  (3, 1, 1, 1, '2026-02-10 20:20:00.000000', 1, 'visited');
+INSERT INTO `user_store_stats` (`userId`, `storeId`, `visitCount`, `lootCount`, `lastVisitedAt`, `tier`) VALUES
+  (2, 1, 6, 2, '2026-02-12 19:50:00.000000', 'master'),
+  (3, 2, 3, 0, '2026-02-12 18:10:00.000000', 'visited'),
+  (1, 1, 1, 0, '2026-02-08 15:00:00.000000', 'visited'),
+  (4, 3, 8, 3, '2026-02-12 22:40:00.000000', 'master'),
+  (5, 4, 5, 2, '2026-02-12 21:55:00.000000', 'visited'),
+  (2, 4, 2, 0, '2026-02-11 22:00:00.000000', 'visited'),
+  (3, 1, 1, 1, '2026-02-10 20:20:00.000000', 'visited');
 
 INSERT INTO `reviews` (`id`, `rating`, `content`, `images`, `createdAt`, `updatedAt`, `userId`, `storeId`) VALUES
   (1, 5, '기계 상태가 좋아서 재방문 의사 있음', '["reviews/1-1.jpg"]', '2026-02-03 20:00:00.000000', '2026-02-03 20:00:00.000000', 2, 1),
