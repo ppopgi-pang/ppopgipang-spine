@@ -180,6 +180,14 @@ definitions:
         example: true
         type: boolean
     type: object
+  dto.FindNearestStoreResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.StoreNearestResponse'
+      success:
+        example: true
+        type: boolean
+    type: object
   dto.GamificationMainAchievementResponse:
     properties:
       item:
@@ -481,6 +489,33 @@ definitions:
         $ref: '#/definitions/dto.StoreTypeResponse'
       updated_at:
         example: "2024-02-07T14:30:00Z"
+        type: string
+    type: object
+  dto.StoreNearestResponse:
+    properties:
+      average_rating:
+        example: 4
+        type: number
+      distance:
+        example: 120
+        type: integer
+      id:
+        example: 2000
+        type: integer
+      latitude:
+        example: 37.5
+        type: number
+      longitude:
+        example: 127.035
+        type: number
+      name:
+        example: 뽑기팡 매장
+        type: string
+      review_count:
+        example: 100
+        type: integer
+      thumbnail_name:
+        example: store_thumbnail_2000.jpg
         type: string
     type: object
   dto.StoreOpeningHourResponse:
@@ -965,6 +1000,35 @@ paths:
           schema:
             $ref: '#/definitions/dto.FindNearByDto'
       summary: (공통) 주변 매장 조회
+      tags:
+      - Stores
+  /stores/nearest:
+    get:
+      description: GPS 기반으로 가장 가까운 가게 1개를 반환합니다. 반경 내 가게가 없으면 null 반환.
+      parameters:
+      - description: 현재 위도
+        format: float64
+        in: query
+        name: latitude
+        required: true
+        type: number
+      - description: 현재 경도
+        format: float64
+        in: query
+        name: longitude
+        required: true
+        type: number
+      - description: '검색 반경 (미터, 기본: 100m)'
+        format: int64
+        in: query
+        name: radius
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.FindNearestStoreResponse'
+      summary: (사용자) 가장 가까운 가게 1개 조회
       tags:
       - Stores
   /stores/reviews/{storeId}:

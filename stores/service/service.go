@@ -374,7 +374,11 @@ func (s *StoreService) SearchStore(ctx context.Context, keyword string, latitude
 
 		var thumbnailName *string
 		if len(store.Photos) > 0 {
-			thumbnailName = store.Photos[0].ImageName
+			for _, photo := range store.Photos {
+				if photo.Type == "cover" {
+					thumbnailName = photo.ImageName
+				}
+			}
 		}
 
 		data = append(data, dto.StoreResponse{
@@ -601,4 +605,66 @@ func (s *StoreService) GetStoreReviewsById(ctx context.Context, storeId int64) (
 		ReviewImages:    reviewImages,
 		ReviewResponses: reviewResponses,
 	}, nil
+}
+
+func (s *StoreService) FindNearestStore(ctx context.Context, latitude, longitude float64, radius int64) (dto.FindNearestStoreResponse, error) {
+	db := s.db.WithContext(ctx)
+
+	type nearestStoreWithDistance struct {
+		entities.Store `gorm:"embedded"`
+		Distance       float64 `gorm:"column:distance"`
+	}
+
+	var row nearestStoreWithDistance
+
+	err := db.
+		Model(&entities.Store{}).
+		Select(
+			"stores.*, ST_Distance_Sphere(POINT(?, ?), POINT(stores.longitude, stores.latitude)) as distance",
+			longitude,
+			latitude,
+		).
+		Where(
+			"ST_Distance_Sphere(POINT(?, ?), POINT(stores.longitude, stores.latitude)) <= ?",
+			longitude, latitude, radius,
+		).
+		Preload("Type").
+		Preload("Photos").
+		Order("distance ASC").
+		Limit(1).
+		Find(&row).Error
+
+	if err != nil {
+		return dto.FindNearestStoreResponse{}, err
+	}
+
+	var reviewCount int64
+	err = db.
+		Model(&reviewEntities.Review{}).
+		Where("storeId = ?", row.ID).
+		Count(&reviewCount).Error
+
+	var thumbnailName *string
+	if len(row.Photos) > 0 {
+		for _, photo := range row.Photos {
+			if photo.Type == "cover" {
+				thumbnailName = photo.ImageName
+			}
+		}
+	}
+
+	return dto.FindNearestStoreResponse{
+		Success: true,
+		Data: dto.StoreNearestResponse{
+			ID:            row.ID,
+			Name:          row.Name,
+			Latitude:      row.Latitude,
+			Longitude:     row.Longitude,
+			AverageRating: row.AverageRating,
+			Distance:      int(row.Distance),
+			ThumbnailName: thumbnailName,
+			ReviewCount:   int(reviewCount),
+		},
+	}, nil
+
 }

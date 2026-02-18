@@ -525,6 +525,48 @@
                 }
             }
         },
+        "/stores/nearest": {
+            "get": {
+                "description": "GPS 기반으로 가장 가까운 가게 1개를 반환합니다. 반경 내 가게가 없으면 null 반환.",
+                "tags": [
+                    "Stores"
+                ],
+                "summary": "(사용자) 가장 가까운 가게 1개 조회",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "format": "float64",
+                        "description": "현재 위도",
+                        "name": "latitude",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "format": "float64",
+                        "description": "현재 경도",
+                        "name": "longitude",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "검색 반경 (미터, 기본: 100m)",
+                        "name": "radius",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.FindNearestStoreResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/stores/reviews/{storeId}": {
             "get": {
                 "description": "가세 상세 페이지 리뷰 API입니다.",
@@ -909,6 +951,18 @@
                 },
                 "meta": {
                     "$ref": "#/definitions/dto.Meta"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "dto.FindNearestStoreResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.StoreNearestResponse"
                 },
                 "success": {
                     "type": "boolean",
@@ -1342,6 +1396,43 @@
                 "updated_at": {
                     "type": "string",
                     "example": "2024-02-07T14:30:00Z"
+                }
+            }
+        },
+        "dto.StoreNearestResponse": {
+            "type": "object",
+            "properties": {
+                "average_rating": {
+                    "type": "number",
+                    "example": 4
+                },
+                "distance": {
+                    "type": "integer",
+                    "example": 120
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 2000
+                },
+                "latitude": {
+                    "type": "number",
+                    "example": 37.5
+                },
+                "longitude": {
+                    "type": "number",
+                    "example": 127.035
+                },
+                "name": {
+                    "type": "string",
+                    "example": "뽑기팡 매장"
+                },
+                "review_count": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "thumbnail_name": {
+                    "type": "string",
+                    "example": "store_thumbnail_2000.jpg"
                 }
             }
         },

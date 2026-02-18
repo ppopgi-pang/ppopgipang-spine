@@ -192,3 +192,30 @@ func (s *StoreController) GetStoreReviewsById(ctx context.Context, storeId path.
 		Body: result,
 	}, nil
 }
+
+// @Summary (사용자) 가장 가까운 가게 1개 조회
+// @Description GPS 기반으로 가장 가까운 가게 1개를 반환합니다. 반경 내 가게가 없으면 null 반환.
+// @Tags Stores
+// @Param latitude query float64 true "현재 위도"
+// @Param longitude query float64 true "현재 경도"
+// @Param radius query int64 false "검색 반경 (미터, 기본: 100m)"
+// @Success 200 {object} dto.FindNearestStoreResponse
+// @Router /stores/nearest [GET]
+func (s *StoreController) FindNearestStore(ctx context.Context, query query.Values) (httpx.Response[dto.FindNearestStoreResponse], error) {
+	latitudeRaw := query.Get("latitude")
+	longitudeRaw := query.Get("longitude")
+
+	latitude, _ := strconv.ParseFloat(latitudeRaw, 64)
+	longitude, _ := strconv.ParseFloat(longitudeRaw, 64)
+
+	radius := query.Int("radius", 100)
+
+	result, err := s.service.FindNearestStore(ctx, latitude, longitude, radius)
+	if err != nil {
+		return httpx.Response[dto.FindNearestStoreResponse]{}, err
+	}
+
+	return httpx.Response[dto.FindNearestStoreResponse]{
+		Body: result,
+	}, nil
+}

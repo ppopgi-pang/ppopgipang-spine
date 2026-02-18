@@ -15,4 +15,5 @@ func RegisterStoreRoutes(app spine.App) {
 	app.Route("GET", "/stores/details/:storeId", (*controller.StoreController).FindByStoreDetailId, route.WithInterceptors((*authInterceptor.OptionalAccessTokenInterceptor)(nil)))
 	app.Route("GET", "/stores/visits/:storeId", (*controller.StoreController).GetStoreStatById, route.WithInterceptors((*authInterceptor.OptionalAccessTokenInterceptor)(nil)))
 	app.Route("GET", "/stores/reviews/:storeId", (*controller.StoreController).GetStoreReviewsById)
+	app.Route("GET", "/stores/nearest", (*controller.StoreController).FindNearestStore)
 }
