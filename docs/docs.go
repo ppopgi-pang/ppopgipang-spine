@@ -1445,21 +1445,19 @@ const docTemplate = `{
         "dto.StoreOpeningHourResponse": {
             "type": "object",
             "properties": {
-                "closeTime": {
+                "close_time": {
                     "type": "string"
                 },
-                "dayOfWeek": {
-                    "type": "integer",
-                    "format": "int32"
+                "day_of_week": {
+                    "type": "integer"
                 },
                 "id": {
-                    "type": "integer",
-                    "format": "int64"
+                    "type": "integer"
                 },
-                "isClosed": {
+                "is_closed": {
                     "type": "boolean"
                 },
-                "openTime": {
+                "open_time": {
                     "type": "string"
                 }
             }

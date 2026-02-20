@@ -520,17 +520,15 @@ definitions:
     type: object
   dto.StoreOpeningHourResponse:
     properties:
-      closeTime:
+      close_time:
         type: string
-      dayOfWeek:
-        format: int32
+      day_of_week:
         type: integer
       id:
-        format: int64
         type: integer
-      isClosed:
+      is_closed:
         type: boolean
-      openTime:
+      open_time:
         type: string
     type: object
   dto.StoreResponse:
