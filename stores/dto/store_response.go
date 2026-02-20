@@ -34,6 +34,9 @@ type StoreSummaryResponse struct {
 }
 
 type StoreDetailResponse struct {
+	Latitude                  float64                    `json:"latitude" example:"37.5000"`
+	Longitude                 float64                    `json:"longitude" example:"127.0350"`
+	Address                   *string                    `json:"address" example:"서울 강남구 테헤란로 10"`
 	IsBookmark                bool                       `json:"is_bookmark"`
 	StoreOpeningHourResponses []StoreOpeningHourResponse `json:"store_opening_hour_responses"`
 	Phone                     *string                    `json:"phone"`

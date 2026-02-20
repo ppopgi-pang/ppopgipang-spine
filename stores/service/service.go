@@ -491,6 +491,9 @@ func (s *StoreService) FindByStoreDetailId(ctx context.Context, storeId int64, u
 	}
 
 	return dto.StoreDetailResponse{
+		Latitude:                  store.Latitude,
+		Longitude:                 store.Longitude,
+		Address:                   store.Address,
 		IsBookmark:                isBookmark,
 		StoreOpeningHourResponses: openingHours,
 		Phone:                     store.Phone,

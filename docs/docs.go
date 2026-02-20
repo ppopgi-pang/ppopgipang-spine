@@ -1250,8 +1250,20 @@ const docTemplate = `{
         "dto.StoreDetailResponse": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "서울 강남구 테헤란로 10"
+                },
                 "is_bookmark": {
                     "type": "boolean"
+                },
+                "latitude": {
+                    "type": "number",
+                    "example": 37.5
+                },
+                "longitude": {
+                    "type": "number",
+                    "example": 127.035
                 },
                 "phone": {
                     "type": "string"
