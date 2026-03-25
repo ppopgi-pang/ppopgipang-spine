@@ -1,9 +1,9 @@
 package dto
 
-import gameDtos "github.com/ppopgi-pang/ppopgipang-spine/gamification/dto"
+import "time"
 
-type CertificationResponse struct {
-	ID      int64                   `json:"id" example:"1001"`
-	Type    string                  `json:"type" example:"loot"`
-	Rewards gameDtos.RewardResponse `json:"rewards"`
+type CheckInResponse struct {
+	ID                 int64     `json:"id" example:"1001"`
+	OccurredAt         time.Time `json:"occurred_at" example:"2026-03-23T12:00:00Z"`
+	CertificationCount int64     `json:"certification_count" example:"5"`
 }

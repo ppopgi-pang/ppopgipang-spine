@@ -102,15 +102,16 @@ definitions:
         example: 접수
         type: string
     type: object
-  dto.CertificationResponse:
+  dto.CheckInResponse:
     properties:
+      certification_count:
+        example: 5
+        type: integer
       id:
         example: 1001
         type: integer
-      rewards:
-        $ref: '#/definitions/dto.RewardResponse'
-      type:
-        example: loot
+      occurred_at:
+        example: "2026-03-23T12:00:00Z"
         type: string
     type: object
   dto.CreateApplicationRequest:
@@ -142,16 +143,6 @@ definitions:
       longitude:
         example: 127.0276
         type: number
-      rating:
-        example: good
-        type: string
-      reason_ids:
-        example:
-        - 1
-        - 2
-        items:
-          type: integer
-        type: array
       store_id:
         example: 2001
         type: integer
@@ -295,24 +286,6 @@ definitions:
       visit_count:
         type: integer
     type: object
-  dto.NewBadgeResponse:
-    properties:
-      badge_image_name:
-        example: badge_first_certification.png
-        type: string
-      code:
-        example: FIRST_CERTIFICATION
-        type: string
-      description:
-        example: 첫 인증을 완료했어요
-        type: string
-      id:
-        example: 4001
-        type: integer
-      name:
-        example: 첫 인증
-        type: string
-    type: object
   dto.OtherUserStat:
     properties:
       average_visit_count:
@@ -337,45 +310,6 @@ definitions:
       rating:
         type: integer
       updated_at:
-        type: string
-    type: object
-  dto.RewardResponse:
-    properties:
-      current_level:
-        example: 5
-        type: integer
-      exp:
-        example: 50
-        type: integer
-      exp_to_next_level:
-        example: 150
-        type: integer
-      level_up:
-        example: true
-        type: boolean
-      new_badges:
-        items:
-          $ref: '#/definitions/dto.NewBadgeResponse'
-        type: array
-      new_level:
-        example: 6
-        type: integer
-      new_stamp:
-        $ref: '#/definitions/dto.StampResponse'
-      total_exp:
-        example: 1250
-        type: integer
-    type: object
-  dto.StampResponse:
-    properties:
-      id:
-        example: 3001
-        type: integer
-      image_name:
-        example: stamp_3001.png
-        type: string
-      store_name:
-        example: 뽑기팡 강남점
         type: string
     type: object
   dto.StoreDetailResponse:
@@ -853,7 +787,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.CertificationResponse'
+            $ref: '#/definitions/dto.CheckInResponse'
       summary: (사용자) 방문 인증 생성
       tags:
       - Certifications

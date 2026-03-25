@@ -299,7 +299,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.CertificationResponse"
+                            "$ref": "#/definitions/dto.CheckInResponse"
                         }
                     }
                 }
@@ -852,19 +852,20 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.CertificationResponse": {
+        "dto.CheckInResponse": {
             "type": "object",
             "properties": {
+                "certification_count": {
+                    "type": "integer",
+                    "example": 5
+                },
                 "id": {
                     "type": "integer",
                     "example": 1001
                 },
-                "rewards": {
-                    "$ref": "#/definitions/dto.RewardResponse"
-                },
-                "type": {
+                "occurred_at": {
                     "type": "string",
-                    "example": "loot"
+                    "example": "2026-03-23T12:00:00Z"
                 }
             }
         },
@@ -907,20 +908,6 @@ const docTemplate = `{
                 "longitude": {
                     "type": "number",
                     "example": 127.0276
-                },
-                "rating": {
-                    "type": "string",
-                    "example": "good"
-                },
-                "reason_ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    },
-                    "example": [
-                        1,
-                        2
-                    ]
                 },
                 "store_id": {
                     "type": "integer",
@@ -1127,31 +1114,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.NewBadgeResponse": {
-            "type": "object",
-            "properties": {
-                "badge_image_name": {
-                    "type": "string",
-                    "example": "badge_first_certification.png"
-                },
-                "code": {
-                    "type": "string",
-                    "example": "FIRST_CERTIFICATION"
-                },
-                "description": {
-                    "type": "string",
-                    "example": "첫 인증을 완료했어요"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 4001
-                },
-                "name": {
-                    "type": "string",
-                    "example": "첫 인증"
-                }
-            }
-        },
         "dto.OtherUserStat": {
             "type": "object",
             "properties": {
@@ -1189,61 +1151,6 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
-                }
-            }
-        },
-        "dto.RewardResponse": {
-            "type": "object",
-            "properties": {
-                "current_level": {
-                    "type": "integer",
-                    "example": 5
-                },
-                "exp": {
-                    "type": "integer",
-                    "example": 50
-                },
-                "exp_to_next_level": {
-                    "type": "integer",
-                    "example": 150
-                },
-                "level_up": {
-                    "type": "boolean",
-                    "example": true
-                },
-                "new_badges": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.NewBadgeResponse"
-                    }
-                },
-                "new_level": {
-                    "type": "integer",
-                    "example": 6
-                },
-                "new_stamp": {
-                    "$ref": "#/definitions/dto.StampResponse"
-                },
-                "total_exp": {
-                    "type": "integer",
-                    "example": 1250
-                }
-            }
-        },
-        "dto.StampResponse": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer",
-                    "example": 3001
-                },
-                "image_name": {
-                    "type": "string",
-                    "example": "stamp_3001.png"
-                },
-                "store_name": {
-                    "type": "string",
-                    "example": "뽑기팡 강남점"
                 }
             }
         },

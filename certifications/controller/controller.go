@@ -23,18 +23,18 @@ func NewCertificationController(certificationsService *service.CertificationServ
 // @Description 방문 인증을 생성하고 보상(EXP, 레벨, 스탬프, 배지)을 반환합니다.
 // @Tags Certifications
 // @Param req body dto.CreateCheckInRequest true "방문 생성 요청 DTO"
-// @Success 200 {object} dto.CertificationResponse
+// @Success 200 {object} dto.CheckInResponse
 // @Router /certifications/checkin [POST]
-func (c *CertificationController) CreateCheckin(ctx context.Context, input *dto.CreateCheckInRequest, spineCtx spine.Ctx) (httpx.Response[dto.CertificationResponse], error) {
+func (c *CertificationController) CreateCheckin(ctx context.Context, input *dto.CreateCheckInRequest, spineCtx spine.Ctx) (httpx.Response[dto.CheckInResponse], error) {
 	userId, _ := utils.GetAuthUserID(spineCtx)
 	if userId == nil {
-		return httpx.Response[dto.CertificationResponse]{}, httperr.Unauthorized("UserID가 존재하지 않습니다.")
+		return httpx.Response[dto.CheckInResponse]{}, httperr.Unauthorized("UserID가 존재하지 않습니다.")
 	}
 	result, err := c.service.CreateCheckInCertification(ctx, *userId, input)
 	if err != nil {
-		return httpx.Response[dto.CertificationResponse]{}, err
+		return httpx.Response[dto.CheckInResponse]{}, err
 	}
-	return httpx.Response[dto.CertificationResponse]{
+	return httpx.Response[dto.CheckInResponse]{
 		Body: result,
 	}, nil
 }
