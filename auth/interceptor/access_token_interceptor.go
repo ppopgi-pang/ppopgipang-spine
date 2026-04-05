@@ -17,7 +17,7 @@ func NewAccessTokenInterceptor(auth *service.AuthService) *AccessTokenIntercepto
 }
 
 func (i *AccessTokenInterceptor) PreHandle(ctx core.ExecutionContext, meta core.HandlerMeta) error {
-	accessToken := extractCookieToken(ctx, "accessToken")
+	accessToken := extractAccessToken(ctx)
 	if accessToken == "" {
 		return httperr.Unauthorized("access token이 없습니다.")
 	}
@@ -41,6 +41,28 @@ func (i *AccessTokenInterceptor) AfterCompletion(ctx core.ExecutionContext, meta
 
 func extractCookieToken(ctx core.ExecutionContext, key string) string {
 	return extractCookie(ctx.Header("Cookie"), key)
+}
+
+func extractAuthorizationBearerToken(ctx core.ExecutionContext) string {
+	authorization := strings.TrimSpace(ctx.Header("Authorization"))
+	if authorization == "" {
+		return ""
+	}
+
+	const bearerPrefix = "Bearer "
+	if !strings.HasPrefix(authorization, bearerPrefix) {
+		return ""
+	}
+
+	return strings.TrimSpace(strings.TrimPrefix(authorization, bearerPrefix))
+}
+
+func extractAccessToken(ctx core.ExecutionContext) string {
+	if token := extractAuthorizationBearerToken(ctx); token != "" {
+		return token
+	}
+
+	return extractCookieToken(ctx, "accessToken")
 }
 
 func extractCookie(cookieHeader, key string) string {

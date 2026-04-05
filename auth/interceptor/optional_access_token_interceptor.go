@@ -15,7 +15,7 @@ func NewOptionalAccessTokenInterceptor(auth *service.AuthService) *OptionalAcces
 }
 
 func (i *OptionalAccessTokenInterceptor) PreHandle(ctx core.ExecutionContext, meta core.HandlerMeta) error {
-	accessToken := extractCookieToken(ctx, "accessToken")
+	accessToken := extractAccessToken(ctx)
 	if accessToken == "" {
 		ctx.Set("auth.userId", "")
 		ctx.Set("auth.role", "")

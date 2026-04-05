@@ -572,6 +572,36 @@ definitions:
         example: 카페
         type: string
     type: object
+  dto.UserMeResponse:
+    properties:
+      createdAt:
+        example: "2026-04-05T12:00:00Z"
+        type: string
+      email:
+        example: user@ppopgipang.com
+        type: string
+      id:
+        example: 1
+        type: integer
+      isAdmin:
+        example: false
+        type: boolean
+      kakaoId:
+        example: "1234567890"
+        type: string
+      mannerTemp:
+        example: 36.5
+        type: number
+      nickname:
+        example: 뽑기팡유저
+        type: string
+      profileImage:
+        example: https://cdn.ppopgi.me/profile.png
+        type: string
+      updatedAt:
+        example: "2026-04-05T12:00:00Z"
+        type: string
+    type: object
   dto.VisitHistoryResponse:
     properties:
       my_stat:
@@ -1063,4 +1093,17 @@ paths:
       summary: (사용자) 가게 상세 페이지 방문내역 탭
       tags:
       - Stores
+  /users/me:
+    get:
+      description: 액세스 토큰으로 현재 로그인한 사용자의 정보를 조회합니다.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserMeResponse'
+      summary: (사용자) 내 정보 조회
+      tags:
+      - Users
 swagger: "2.0"

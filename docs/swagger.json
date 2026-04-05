@@ -701,6 +701,26 @@
                     }
                 }
             }
+        },
+        "/users/me": {
+            "get": {
+                "description": "액세스 토큰으로 현재 로그인한 사용자의 정보를 조회합니다.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "(사용자) 내 정보 조회",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserMeResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1511,6 +1531,47 @@
                 "name": {
                     "type": "string",
                     "example": "카페"
+                }
+            }
+        },
+        "dto.UserMeResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string",
+                    "example": "2026-04-05T12:00:00Z"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user@ppopgipang.com"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "isAdmin": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "kakaoId": {
+                    "type": "string",
+                    "example": "1234567890"
+                },
+                "mannerTemp": {
+                    "type": "number",
+                    "example": 36.5
+                },
+                "nickname": {
+                    "type": "string",
+                    "example": "뽑기팡유저"
+                },
+                "profileImage": {
+                    "type": "string",
+                    "example": "https://cdn.ppopgi.me/profile.png"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2026-04-05T12:00:00Z"
                 }
             }
         },

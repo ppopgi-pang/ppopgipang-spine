@@ -1,6 +1,8 @@
 package service
 
 import (
+	"context"
+
 	"github.com/ppopgi-pang/ppopgipang-spine/users/entities"
 	"gorm.io/gorm"
 )
@@ -25,6 +27,20 @@ func (u *UserService) FindByEmail(email string) (entities.User, error) {
 		First(&user).
 		Error
 
+	if err != nil {
+		return entities.User{}, err
+	}
+
+	return user, nil
+}
+
+func (u *UserService) GetUserInfo(ctx context.Context, userID int64) (entities.User, error) {
+	var user entities.User
+
+	err := u.db.WithContext(ctx).
+		Where("id = ?", userID).
+		First(&user).
+		Error
 	if err != nil {
 		return entities.User{}, err
 	}
