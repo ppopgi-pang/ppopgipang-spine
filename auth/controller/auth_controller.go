@@ -45,24 +45,8 @@ func (a *AuthController) KakaoCallback(ctx context.Context, query query.Values, 
 			Location: "https://localhost:5173/auth/callback/kakao",
 			Options: httpx.ResponseOptions{
 				Cookies: []httpx.Cookie{
-					{
-						Name:     "accessToken",
-						Value:    accessToken,
-						Path:     "/",
-						Secure:   false,
-						HttpOnly: true,
-						SameSite: "Lax",
-						MaxAge:   int((5 * time.Minute).Seconds()),
-					},
-					{
-						Name:     "refreshToken",
-						Value:    refreshToken,
-						Path:     "/",
-						Secure:   false,
-						HttpOnly: true,
-						SameSite: "Lax",
-						MaxAge:   int((7 * 24 * time.Hour).Seconds()),
-					},
+					httpx.AccessTokenCookie(accessToken, 5*time.Minute),
+					httpx.RefreshTokenCookie(refreshToken, 7*24*time.Hour),
 				},
 			},
 		}, nil
