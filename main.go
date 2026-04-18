@@ -226,7 +226,7 @@ func main() {
 		cors.New(cors.Config{
 			AllowOrigins:     []string{"https://localhost:5173", "https://ppopgi.me", "https://www.ppopgi.me"},
 			AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "OPTIONS"},
-			AllowHeaders:     []string{"Content-Type"},
+			AllowHeaders:     []string{"Content-Type", "Authorization", "Accept", "Origin"},
 			AllowCredentials: true,
 		}),
 	)
